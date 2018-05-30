@@ -6,10 +6,10 @@ WORKDIR /nessana/
 
 ADD . /nessana/
 
-RUN bundle install --deployment
+RUN bundle install
 
-RUN bundle exec gem build nessana.gemspec
+RUN gem build nessana.gemspec
 
-RUN bundle exec gem install --local nessana-*.gem
+RUN gem install --local nessana-*.gem
 
-CMD bundle exec nessana
+CMD nessana
