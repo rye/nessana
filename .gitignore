@@ -1,5 +1,5 @@
-# Nessus dumps and any other .csv files
-*.csv
+# Ignore everything in /data/
+/data/
 
 # Configuration files
 *.yml
