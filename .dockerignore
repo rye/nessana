@@ -1,0 +1,8 @@
+# Ignore data
+/data/
+
+# Ignore yaml files too
+*.yml
+
+# Ignore .git/
+/.git/
