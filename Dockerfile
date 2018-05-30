@@ -13,4 +13,4 @@ RUN gem build nessana.gemspec
 
 RUN gem install --local nessana-*.gem
 
-CMD nessana
+CMD bundle exec nessana
