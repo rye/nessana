@@ -3,3 +3,6 @@
 
 # Configuration files
 *.yml
+
+# Built .gem files
+*.gem
