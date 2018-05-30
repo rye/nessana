@@ -1,0 +1,5 @@
+# Nessus dumps and any other .csv files
+*.csv
+
+# Configuration files
+*.yml
