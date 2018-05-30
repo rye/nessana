@@ -1,3 +1,9 @@
+PATH
+  remote: .
+  specs:
+    nessana (0.1.0.pre.alpha.0)
+      asana (~> 0.6.3)
+
 GEM
   remote: https://rubygems.org/
   specs:
@@ -28,16 +34,16 @@ GEM
     pry (0.11.3)
       coderay (~> 1.1.0)
       method_source (~> 0.9.0)
-    rack (2.0.4)
+    rack (2.0.5)
     ruby-prof (0.17.0)
 
 PLATFORMS
   ruby
 
 DEPENDENCIES
-  asana
-  pry
-  ruby-prof
+  nessana!
+  pry (~> 0.11.3)
+  ruby-prof (~> 0.17.0)
 
 BUNDLED WITH
    1.16.1
