@@ -6,3 +6,6 @@
 
 # Ignore .git/
 /.git/
+
+# Ignore all .gem files in the root
+/*.gem
