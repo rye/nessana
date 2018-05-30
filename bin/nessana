@@ -1,3 +1,5 @@
+#!/usr/bin/env ruby
+
 require 'asana'
 require 'csv'
 require 'json'
@@ -6,8 +8,6 @@ require 'pp'
 require 'pry'
 require 'ruby-prof'
 require 'yaml'
-
-$LOAD_PATH.unshift(File.join(File.dirname(__FILE__),'lib')) unless $LOAD_PATH.map { |l| File.expand_path(l) }.include? File.expand_path(File.join(File.dirname(__FILE__), 'lib'))
 
 require 'vulnerability'
 require 'vulnerability_list'
