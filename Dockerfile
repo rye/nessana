@@ -9,4 +9,8 @@ RUN bundle install --deployment
 
 ADD . /nessana/
 
-CMD bundle exec ruby process.rb
+RUN gem build nessana.gemspec
+
+RUN gem install --local nessana-*.gem
+
+CMD nessana
