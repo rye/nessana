@@ -7,10 +7,13 @@ require 'logger'
 require 'pp'
 require 'pry'
 require 'ruby-prof'
+require 'ruby-prof-flamegraph'
 require 'yaml'
 
 require 'vulnerability'
 require 'vulnerability_list'
+
+result = RubyProf.profile do
 
 $logger = Logger.new(STDOUT)
 $logger.level = Logger::DEBUG
@@ -47,6 +50,11 @@ end.select do |task_hash|
 end
 
 pp tasks
+
+end
+
+printer = RubyProf::FlameGraphPrinter.new(result)
+printer.print(STDERR, {})
 
 __END__
 
