@@ -12,28 +12,43 @@ describe Nessana do
 		expect(subject::Executor).to be_a(Module)
 	end
 
-	describe Nessana::Executor do
+	describe '::Executor' do
+		subject { Nessana::Executor }
+
 		it 'responds to execute!' do
 			expect(subject).to respond_to(:execute!)
 		end
 
 		describe '.execute!' do
 			before do
+				allow(subject).to receive(:exit)
 				allow(STDOUT).to receive(:write)
-				allow(STDERR).to receive(:write)
+				# allow(STDERR).to receive(:write)
 			end
 
 			context 'taking no command-line arguments' do
 				let(:arguments) { [] }
 
 				it 'produces usage message' do
-					allow(Nessana::Executor).to receive(:exit)
 					expect { subject.send(:execute!, *arguments) }.to(output(/Usage:/).to_stdout)
 				end
 
 				it 'exits with status 1' do
-					allow(Nessana::Executor).to receive(:exit)
-					expect(Nessana::Executor).to receive(:exit).with(1)
+					expect(subject).to receive(:exit).with(1)
+
+					subject.send(:execute!, *arguments)
+				end
+			end
+
+			context '--help' do
+				let(:arguments) { ['--help'] }
+
+				it 'produces usage message' do
+					expect { subject.send(:execute!, *arguments) }.to(output(/Usage:/).to_stdout)
+				end
+
+				it 'exits with status 0' do
+					expect(subject).to receive(:exit).with(0)
 
 					subject.send(:execute!, *arguments)
 				end
