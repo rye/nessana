@@ -1,6 +1,12 @@
+lib_directory = File.join(File.dirname(__FILE__), 'lib')
+$LOAD_PATH.unshift(lib_directory) unless
+	$LOAD_PATH.include?(lib_directory) || $LOAD_PATH.include?(File.expand_path(lib_directory))
+
+require 'nessana/version'
+
 Gem::Specification.new do |s|
 	s.name = 'nessana'
-	s.version = '0.1.0-alpha.0'
+	s.version = Nessana::VERSION
 	s.summary = "A Nessus dump parser and Asana task creator which does inference based on task statuses"
 	s.authors = ['Kristofer Rye <kristofer.rye@gmail.com>']
 	s.licenses = ['MIT']
