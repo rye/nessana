@@ -21,7 +21,7 @@ GEM
     faraday_middleware-multi_json (0.0.6)
       faraday_middleware
       multi_json
-    ffi (1.9.23)
+    ffi (1.9.25)
     formatador (0.2.5)
     guard (2.14.2)
       formatador (>= 0.2.4)
