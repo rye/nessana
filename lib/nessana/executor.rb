@@ -1,6 +1,8 @@
 require 'pp'
-require 'nessana/executor/execution_configuration'
 require 'optparse'
+
+require 'nessana/executor/execution_configuration'
+require 'nessana/dump'
 
 module Nessana
 	module Executor
@@ -13,11 +15,13 @@ module Nessana
 
 			unless @configuration[:dump_filename]
 				puts 'No dump filename given; not doing anything.'
-				exit 0
+				return
 			end
 
-			raise 'dump_filename nil!' unless !@configuration[:dump_filename].nil?
-			raise 'cache_filename nil!' unless !@configuration[:cache_filename].nil?
+			unless @configuration[:cache_filename]
+				puts 'No cache filename given; not doing anything.'
+				return
+			end
 
 			dump = Dump.new(@configuration[:dump_filename])
 		end
