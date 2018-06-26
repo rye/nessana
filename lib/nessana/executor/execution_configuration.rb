@@ -6,8 +6,10 @@ module Nessana::Executor
 			self[:verbosity] = :info
 			self[:config] = 'config.yml'
 			self[:dump_filename] = nil
+			self[:cache_filename] = nil
 		end
 
+		# TODO too many lines
 		def add_parser_hooks(parser)
 			parser.banner = "Usage: #{ARGV[0]} [options] <filename.csv>"
 			parser.separator ""
@@ -76,6 +78,7 @@ module Nessana::Executor
 			parser.on('-v', '--verbosity VERBOSITY', "The level of verbosity to use. (default: #{self[:verbosity]})")
 		end
 
+		# TODO deep merge?
 		def read_configuration!
 			self.merge(read_configuration(self[:config]))
 		end
