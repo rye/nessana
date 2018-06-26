@@ -19,7 +19,7 @@ module Nessana
 			raise 'dump_filename nil!' unless !@configuration[:dump_filename].nil?
 			raise 'cache_filename nil!' unless !@configuration[:cache_filename].nil?
 
-			dump = Dump.from_file(@configuration[:dump_filename])
+			dump = Dump.new(@configuration[:dump_filename])
 		end
 
 		def self.parse(*argv)
