@@ -10,8 +10,8 @@ require 'ruby-prof'
 require 'ruby-prof-flamegraph'
 require 'yaml'
 
-require 'vulnerability'
-require 'vulnerability_list'
+require 'nessana/vulnerability'
+require 'nessana/vulnerability_list'
 
 result = RubyProf.profile do
 
