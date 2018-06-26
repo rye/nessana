@@ -106,19 +106,19 @@ result = RubyProf.profile do
 			vuln.synopsis
 		end.uniq
 
-		throw "" unless uniqued_synopses.count == 1
+		throw "More than one unique synopsis given?" unless uniqued_synopses.count == 1
 
 		uniqued_descriptions = vulns.map do |vuln|
 			vuln.description
 		end.uniq
 
-		throw "what" unless uniqued_descriptions.count == 1
+		throw "More than one unique description given?" unless uniqued_descriptions.count == 1
 
 		uniqued_solutions = vulns.map do |vuln|
 			vuln.solution
 		end.uniq
 
-		throw "what" unless uniqued_solutions.count == 1
+		throw "More than one unique solution given?" unless uniqued_solutions.count == 1
 
 		{cvss: uniqued_cvsss.first, title: "[Nessus #{plugin_id}] #{uniqued_titles.join(', ')}", body: "CVE: #{uniqued_cves.first || 'N/A'}\nCVSS: #{uniqued_cvsss.first || 'N/A'}\nRisk: #{uniqued_risks.first || 'N/A'}\n\nSYNOPSIS\n\n#{uniqued_synopses.first}\n\nDESCRIPTION\n\n#{uniqued_descriptions.first.join("\n\n")}\n\nSOLUTION\n\n#{uniqued_solutions.first.join("\n\n")}\n\nThis issue was detected on #{uniqued_hosts.count} hosts: #{uniqued_hosts.join(', ')}", hosts: uniqued_hosts}
 	end
