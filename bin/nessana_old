@@ -37,7 +37,7 @@ project = $client.projects.find_all(workspace: workspace.id).select do |project|
 end.first
 
 tag = $client.tags.find_all(workspace: workspace.id).select do |tag|
-	tag.name == 'Automated [Nessus]'
+	tag.name == 'Automated [Nessana]'
 end.first
 
 pp project.sections
