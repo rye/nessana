@@ -38,8 +38,9 @@ module Nessana::Executor
 			mime_type = infer_mime_type(filename)
 			parsed = nil
 
+			io = open(filename, 'rb')
+
 			begin
-				io = IO.open(filename, 'rb')
 				data = io.read
 
 				case mime_type
