@@ -345,6 +345,7 @@ Layout/IndentationWidth:
   # Number of spaces for each indentation level.
   Width: 2
   IgnoredPatterns: []
+  Enabled: false
 
 # Checks the indentation of the first element in an array literal.
 Layout/IndentArray:
@@ -603,6 +604,7 @@ Layout/Tab:
   # It is used during auto-correction to determine how many spaces should
   # replace each tab.
   IndentationWidth: ~
+  Enabled: false
 
 Layout/TrailingBlankLines:
   EnforcedStyle: final_newline
