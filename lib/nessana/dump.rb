@@ -22,7 +22,9 @@ module Nessana
 		protected
 
 		def read_csv(filename)
-			vulnerabilities = CSV.read(filename)[1..-1].map do |row|
+			rows = CSV.read(filename)
+
+			vulnerabilities = rows[1..-1].map do |row|
 				Vulnerability.new(*row)
 			end
 
