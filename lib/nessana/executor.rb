@@ -36,7 +36,10 @@ module Nessana
 				parser.parse(*argv)
 			end
 
-			configuration[:dump_filename] = argv.shift
+			option_parser.order! do |leftover_argument|
+				configuration['dump_filename'] = leftover_argument if
+					!configuration['dump_filename'] && File.readable?(leftover_argument)
+			end
 
 			configuration
 		end
