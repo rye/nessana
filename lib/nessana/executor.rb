@@ -19,6 +19,7 @@ module Nessana
 				return
 			end
 
+			pp @configuration
 
 			cache = Cache.new(@configuration['cache'])
 			dump = Dump.new(@configuration['dump_filename'])
