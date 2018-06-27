@@ -2,6 +2,7 @@ require 'pp'
 require 'optparse'
 
 require 'nessana/executor/execution_configuration'
+require 'nessana/cache'
 require 'nessana/dump'
 
 module Nessana
@@ -19,6 +20,7 @@ module Nessana
 			end
 
 
+			cache = Cache.new(@configuration['cache'])
 			dump = Dump.new(@configuration['dump_filename'])
 		end
 
