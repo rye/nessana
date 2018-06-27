@@ -12,22 +12,22 @@ module Nessana::Executor
 		# TODO too many lines
 		def add_parser_hooks(parser)
 			parser.banner = "Usage: #{ARGV[0]} [options] <filename.csv>"
-			parser.separator ""
-			parser.separator "Execution Options"
+			parser.separator ''
+			parser.separator 'Execution Options'
 
 			add_config_option(parser)
 
-			parser.separator ""
-			parser.separator "General Options"
+			parser.separator ''
+			parser.separator 'General Options'
 			add_usage_option(parser)
 			add_verbosity_option(parser)
 
-			parser.on_tail("-h", "--help", "Show this message") do
+			parser.on_tail('-h', '--help', 'Show this message') do
 				puts parser
 				exit
 			end
 
-			parser.on_tail("--version", "Show version") do
+			parser.on_tail('--version', 'Show version') do
 				puts Nessana::VERSION
 				exit
 			end
@@ -61,8 +61,8 @@ module Nessana::Executor
 		protected
 
 		def add_config_option(parser)
-			parser.on('-c', '--config CONFIG', "Load configuration from CONFIG (default: #{self[:config]})") do |config|
-				self[:config] = config
+			parser.on('-c', '--config CONFIG', "Load configuration from CONFIG (default: #{self['config']})") do |config|
+				self['config'] = config
 				read_configuration!
 			end
 		end
@@ -75,12 +75,12 @@ module Nessana::Executor
 		end
 
 		def add_verbosity_option(parser)
-			parser.on('-v', '--verbosity VERBOSITY', "The level of verbosity to use. (default: #{self[:verbosity]})")
+			parser.on('-v', '--verbosity VERBOSITY', "The level of verbosity to use. (default: #{self['verbosity']})")
 		end
 
 		# TODO deep merge?
 		def read_configuration!
-			self.merge(read_configuration(self[:config]))
+			self.merge(read_configuration(self['config']))
 		end
 
 		def infer_mime_type(filename)
