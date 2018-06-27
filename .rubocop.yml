@@ -1,3 +1,4 @@
+---
 AllCops:
   Exclude:
     - 'bin/nessana_old'
