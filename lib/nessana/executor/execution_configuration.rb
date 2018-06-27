@@ -34,6 +34,7 @@ module Nessana::Executor
 			end
 		end
 
+		# TODO too many lines
 		def read_configuration(filename)
 			raise ArgumentError, 'Must pass a valid filename' unless !filename.nil?
 

@@ -12,6 +12,7 @@ module Nessana
 			read_csv!
 		end
 
+		# TODO implement
 		def to_dbm
 		end
 
