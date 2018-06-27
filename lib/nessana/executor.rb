@@ -26,7 +26,7 @@ module Nessana
 			dump = Dump.new(@configuration[:dump_filename])
 		end
 
-		def self.parse(argv)
+		def self.parse(*argv)
 			configuration = ExecutionConfiguration.new
 
 			option_parser = OptionParser.new do |parser|
@@ -37,7 +37,7 @@ module Nessana
 					exit 1
 				end
 
-				parser.parse(argv)
+				parser.parse(*argv)
 			end
 
 			configuration[:dump_filename] = argv.shift
