@@ -1,3 +1,4 @@
+require 'nessana/cache'
 require 'nessana/dump'
 require 'nessana/executor'
 require 'nessana/version'
