@@ -3,6 +3,7 @@
 
 # Configuration files
 *.yml
+!.rubocop.yml
 
 # Built .gem files
 *.gem
