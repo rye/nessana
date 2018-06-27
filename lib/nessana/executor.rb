@@ -18,10 +18,6 @@ module Nessana
 				return
 			end
 
-			unless @configuration[:cache_filename]
-				puts 'No cache filename given; not doing anything.'
-				return
-			end
 
 			dump = Dump.new(@configuration[:dump_filename])
 		end
