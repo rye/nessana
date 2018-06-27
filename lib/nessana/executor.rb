@@ -19,7 +19,7 @@ module Nessana
 			end
 
 
-			dump = Dump.new(@configuration[:dump_filename])
+			dump = Dump.new(@configuration['dump_filename'])
 		end
 
 		def self.parse(*argv)
