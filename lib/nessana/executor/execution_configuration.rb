@@ -80,7 +80,7 @@ module Nessana::Executor
 
 		# TODO deep merge?
 		def read_configuration!
-			self.merge(read_configuration(self['config']))
+			self.merge!(read_configuration(self['config']))
 		end
 
 		def infer_mime_type(filename)
