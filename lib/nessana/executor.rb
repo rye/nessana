@@ -13,7 +13,7 @@ module Nessana
 		def self.execute!(argv = ARGV)
 			parse!(argv)
 
-			unless @configuration[:dump_filename]
+			unless @configuration['dump_filename']
 				puts 'No dump filename given; not doing anything.'
 				return
 			end
