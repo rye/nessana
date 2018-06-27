@@ -1,3 +1,5 @@
+require 'mime-types'
+
 require 'nessana/version'
 
 module Nessana::Executor
