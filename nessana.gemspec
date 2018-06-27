@@ -16,10 +16,12 @@ Gem::Specification.new do |s|
 
 	s.add_dependency 'asana', '~> 0.6.3'
 	s.add_dependency 'mime-types', '~> 3.1'
+
 	s.add_development_dependency 'guard', '~> 2.14'
 	s.add_development_dependency 'guard-rspec', '~> 4.7'
 	s.add_development_dependency 'pry', '~> 0.11.3'
 	s.add_development_dependency 'rspec', '~> 3.7'
+	s.add_development_dependency 'rubocop', '~> 0.57.2'
 	s.add_development_dependency 'ruby-prof', '~> 0.17.0'
 	s.add_development_dependency 'ruby-prof-flamegraph', '~> 0.3.0'
 end
