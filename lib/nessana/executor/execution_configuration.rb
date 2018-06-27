@@ -3,10 +3,10 @@ require 'nessana/version'
 module Nessana::Executor
 	class ExecutionConfiguration < ::Hash
 		def initialize
-			self[:verbosity] = :info
-			self[:config] = 'config.yml'
-			self[:dump_filename] = nil
 			self[:cache_filename] = nil
+			self['verbosity'] = 'info'
+			self['config'] = 'config.yml'
+			self['dump_filename'] = nil
 		end
 
 		# TODO too many lines
