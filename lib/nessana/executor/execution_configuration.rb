@@ -87,7 +87,7 @@ module Nessana::Executor
 
 		# TODO deep merge?
 		def read_configuration!
-			self.merge!(read_configuration(self['config']))
+			merge!(read_configuration(self['config']))
 		end
 	end
 end
