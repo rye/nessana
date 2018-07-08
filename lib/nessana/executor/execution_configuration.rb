@@ -47,7 +47,7 @@ module Nessana::Executor
 				data = io.read
 
 				case mime_type
-				when /yaml/
+				when /ya?ml/
 					require 'yaml'
 					parsed = YAML.load(data)
 				when /json/
