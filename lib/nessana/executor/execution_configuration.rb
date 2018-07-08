@@ -10,7 +10,7 @@ module Nessana::Executor
 			self['dump_filename'] = nil
 		end
 
-		# TODO too many lines
+		# FIXME too many lines
 		def add_parser_hooks(parser)
 			parser.banner = "Usage: #{ARGV[0]} [options] <filename.csv>"
 			parser.separator ''
@@ -34,7 +34,7 @@ module Nessana::Executor
 			end
 		end
 
-		# TODO too many lines
+		# FIXME too many lines
 		def read_configuration(filename)
 			raise ArgumentError, 'Must pass a valid filename' unless !filename.nil?
 
