@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    nessana (0.1.0.pre.alpha.2)
+    nessana (0.1.0.pre.alpha.3)
       asana (~> 0.6.3)
       mime-types (~> 3.1)
 
@@ -90,7 +90,7 @@ GEM
       diff-lcs (>= 1.2.0, < 2.0)
       rspec-support (~> 3.7.0)
     rspec-support (3.7.1)
-    rubocop (0.57.2)
+    rubocop (0.58.0)
       jaro_winkler (~> 1.5.1)
       parallel (~> 1.10)
       parser (>= 2.5)
@@ -121,7 +121,7 @@ DEPENDENCIES
   nessana!
   pry (~> 0.11.3)
   rspec (~> 3.7)
-  rubocop (~> 0.57.2)
+  rubocop (~> 0.57)
   ruby-prof (~> 0.17.0)
   ruby-prof-flamegraph (~> 0.3.0)
   simplecov (~> 0.16.1)

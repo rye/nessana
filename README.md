@@ -7,3 +7,7 @@ Parse Nessus dumps and intelligently create Asana tasks.
 ```console
 $ nessana -c config.yml scan.csv
 ```
+
+## Contributing
+
+See [CONTRIBUTING.md](CONTRIBUTING.md)
