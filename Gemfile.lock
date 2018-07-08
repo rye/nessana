@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    nessana (0.1.0.pre.alpha.3)
+    nessana (0.1.0.pre.alpha.4)
       asana (~> 0.6.3)
       mime-types (~> 3.1)
 
