@@ -9,6 +9,7 @@
 # Configuration files
 *.yml
 !.rubocop.yml
+!.travis.yml
 
 # Built .gem files
 *.gem
