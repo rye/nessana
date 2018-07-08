@@ -12,7 +12,7 @@ module Nessana
 		end
 
 		def self.execute!(argv = ARGV)
-			parse!(argv)
+			parse!(*argv)
 
 			unless @configuration['dump_filename']
 				puts 'No dump filename given; not doing anything.'
@@ -39,7 +39,8 @@ module Nessana
 				parser.parse(*argv)
 			end
 
-			option_parser.order! do |leftover_argument|
+
+			option_parser.order!(argv) do |leftover_argument|
 				configuration['dump_filename'] = leftover_argument if
 					!configuration['dump_filename'] && File.readable?(leftover_argument)
 			end

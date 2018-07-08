@@ -13,8 +13,7 @@ module Nessana
 		end
 
 		# TODO implement
-		def to_dbm
-		end
+		def to_dbm; end
 
 		def read_csv!
 			@list = read_csv(filename)

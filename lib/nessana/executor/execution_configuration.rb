@@ -10,7 +10,7 @@ module Nessana::Executor
 			self['dump_filename'] = nil
 		end
 
-		# TODO too many lines
+		# FIXME too many lines
 		def add_parser_hooks(parser)
 			parser.banner = "Usage: #{ARGV[0]} [options] <filename.csv>"
 			parser.separator ''
@@ -34,7 +34,7 @@ module Nessana::Executor
 			end
 		end
 
-		# TODO too many lines
+		# FIXME too many lines
 		def read_configuration(filename)
 			raise ArgumentError, 'Must pass a valid filename' unless !filename.nil?
 
@@ -47,7 +47,7 @@ module Nessana::Executor
 				data = io.read
 
 				case mime_type
-				when /yaml/
+				when /ya?ml/
 					require 'yaml'
 					parsed = YAML.load(data)
 				when /json/
@@ -81,13 +81,13 @@ module Nessana::Executor
 			parser.on('-v', '--verbosity VERBOSITY', "The level of verbosity to use. (default: #{self['verbosity']})")
 		end
 
+		def infer_mime_type(filename)
+			MIME::Types.type_for(filename).first.content_type
+		end
+
 		# TODO deep merge?
 		def read_configuration!
 			self.merge!(read_configuration(self['config']))
-		end
-
-		def infer_mime_type(filename)
-			MIME::Types.type_for(filename).first.content_type
 		end
 	end
 end
