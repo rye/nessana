@@ -3,6 +3,9 @@ AllCops:
   Exclude:
     - 'bin/nessana_old'
 
+Layout/IndentHeredoc:
+  Enabled: false
+
 Layout/IndentationWidth:
   Enabled: false
 
