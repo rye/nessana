@@ -1,6 +1,7 @@
 lib_directory = File.join(File.dirname(__FILE__), 'lib')
 $LOAD_PATH.unshift(lib_directory) unless
-	$LOAD_PATH.include?(lib_directory) || $LOAD_PATH.include?(File.expand_path(lib_directory))
+	$LOAD_PATH.include?(lib_directory) ||
+	$LOAD_PATH.include?(File.expand_path(lib_directory))
 
 require 'nessana/version'
 
