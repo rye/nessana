@@ -12,3 +12,6 @@
 
 # Built .gem files
 *.gem
+
+# Coverage data
+/coverage/
