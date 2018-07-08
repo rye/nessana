@@ -1,6 +1,9 @@
 require 'rspec'
 require 'rspec/expectations'
 
+require 'simplecov'
+SimpleCov.start
+
 RSpec.configure do |config|
 end
 
