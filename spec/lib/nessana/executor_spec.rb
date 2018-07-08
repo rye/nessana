@@ -1,7 +1,5 @@
 describe 'nessana/executor' do
-	it 'can be required' do
-		expect { require subject }.not_to raise_exception
-	end
+	it { is_expected.to be_requirable }
 end
 
 require 'nessana/executor'
