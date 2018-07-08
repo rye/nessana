@@ -81,13 +81,13 @@ module Nessana::Executor
 			parser.on('-v', '--verbosity VERBOSITY', "The level of verbosity to use. (default: #{self['verbosity']})")
 		end
 
+		def infer_mime_type(filename)
+			MIME::Types.type_for(filename).first.content_type
+		end
+
 		# TODO deep merge?
 		def read_configuration!
 			self.merge!(read_configuration(self['config']))
-		end
-
-		def infer_mime_type(filename)
-			MIME::Types.type_for(filename).first.content_type
 		end
 	end
 end
