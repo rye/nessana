@@ -9,6 +9,9 @@ Gem::Specification.new do |s|
 	s.name = 'nessana'
 	s.version = Nessana::VERSION
 	s.summary = 'A Nessus dump parser and Asana task creator'
+	s.description = <<-DESCRIPTION
+A Nessus dump parser and differ which can create Asana tasks.
+DESCRIPTION
 	s.authors = ['Kristofer Rye <kristofer.rye@gmail.com>']
 	s.licenses = ['MIT']
 	s.homepage = 'https://github.com/rye/nessana'
