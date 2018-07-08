@@ -17,7 +17,7 @@ describe Nessana do
 			expect(subject).to respond_to(:execute!)
 		end
 
-		describe '.execute!' do
+		describe :'.execute!' do
 			before do
 				allow(subject).to receive(:exit)
 				allow(STDOUT).to receive(:write)
@@ -28,13 +28,13 @@ describe Nessana do
 				let(:arguments) { [] }
 
 				it 'produces usage message' do
-					expect { subject.send(:execute!, *arguments) }.to(output(/Usage:/).to_stdout)
+					expect { subject.send(:execute!, arguments) }.to(output(/Usage:/).to_stdout)
 				end
 
 				it 'exits with status 1' do
 					expect(subject).to receive(:exit).with(1)
 
-					subject.send(:execute!, *arguments)
+					subject.send(:execute!, arguments)
 				end
 			end
 
@@ -42,13 +42,13 @@ describe Nessana do
 				let(:arguments) { ['--help'] }
 
 				it 'produces usage message' do
-					expect { subject.send(:execute!, *arguments) }.to(output(/Usage:/).to_stdout)
+					expect { subject.send(:execute!, arguments) }.to(output(/Usage:/).to_stdout)
 				end
 
 				it 'exits with status 0' do
 					expect(subject).to receive(:exit).with(0)
 
-					subject.send(:execute!, *arguments)
+					subject.send(:execute!, arguments)
 				end
 			end
 		end
