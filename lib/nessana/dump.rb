@@ -101,11 +101,7 @@ module Nessana
 				vulnerability
 			end
 
-			{
-				:removed_vulnerabilities => mitigated_vulnerabilities,
-				:new_vulnerabilities => new_vulnerabilities,
-				:all_vulnerabilities => all_vulnerabilities
-			}
+			all_vulnerabilities
 		end
 
 		def old_(other)

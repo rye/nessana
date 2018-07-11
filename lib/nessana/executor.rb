@@ -85,26 +85,10 @@ module Nessana
 
 			diff = new_dump - old_dump
 
-			puts "The following vulnerabilities have been removed:"
+			diff.each do |v|
+				puts "#{v}
 
-			diff[:removed_vulnerabilities].each do |v|
-				puts v.short_description
-			end
-
-			puts "\n" * 4
-
-			puts "The following new vulnerabilities have been detected:"
-
-			diff[:removed_vulnerabilities].each do |v|
-				puts v
-
-				puts "\n" * 2
-			end
-
-			puts "The following changes have been made to discoveries:"
-
-			diff[:all_vulnerabilities].each do |v|
-				puts v.title_line
+DISCOVERIES"
 				v.detections.sort do |detection_a, detection_b|
 					detection_a[:port] <=> detection_b[:port]
 				end.sort do |detection_a, detection_b|
