@@ -22,21 +22,104 @@ module Nessana
 		end
 
 		def -(other)
-			mitigated_vulnerabilities = other.select do |plugin_id, _v|
+			other_plugin_ids = other.keys
+			self_plugin_ids = keys
+
+			other_detections = other.map do |plugin_id, vulnerability|
+				vulnerability.detections.map do |detection|
+					{
+						plugin_id => detection.to_h
+					}
+				end
+			end.flatten
+
+			self_detections = map do |plugin_id, vulnerability|
+				vulnerability.detections.map do |detection|
+					{
+						plugin_id => detection.to_h
+					}
+				end
+			end.flatten
+
+			detections = [other_detections, self_detections].flatten.uniq
+
+			detections.each do |detection_entry|
+				in_self = self_detections.include? detection_entry
+				in_other = other_detections.include? detection_entry
+
+				detection = detection_entry.values.first
+
+				if in_self && in_other
+					detection[:status] = :present
+				elsif !in_self && in_other
+					detection[:status] = :removed
+				elsif in_self && !in_other
+					detection[:status] = :added
+				else
+					detection[:status] = true
+				end
+			end
+
+			added_plugin_ids = self_plugin_ids - other_plugin_ids
+			deleted_plugin_ids = other_plugin_ids - self_plugin_ids
+			all_plugin_ids = other_plugin_ids + added_plugin_ids
+
+			throw 'something is wrong' unless (all_plugin_ids - added_plugin_ids) - other_plugin_ids == []
+			throw 'something is wrong' unless (all_plugin_ids - deleted_plugin_ids) - self_plugin_ids == []
+
+			mitigated_vulnerabilities = deleted_plugin_ids.map do |plugin_id|
+				other[plugin_id]
+			end
+
+			new_vulnerabilities = added_plugin_ids.map do |plugin_id|
+				self[plugin_id]
+			end
+
+			all_vulnerabilities = all_plugin_ids.map do |plugin_id|
+				vulnerability = nil
+
+				if !self[plugin_id]
+					vulnerability = other[plugin_id].clone
+				else
+					vulnerability = self[plugin_id].clone
+				end
+
+				plugin_detections = detections.select do |detection_entry|
+					detection_entry.keys.first == vulnerability[:plugin_id]
+				end.map do |detection_entry|
+					detection_entry.values.first
+				end
+
+				vulnerability.detections = plugin_detections.map do |detection|
+					Detection.new(detection[:host], detection[:protocol], detection[:port], detection[:status])
+				end
+
+				vulnerability
+			end
+
+			{
+				:removed_vulnerabilities => mitigated_vulnerabilities,
+				:new_vulnerabilities => new_vulnerabilities,
+				:all_vulnerabilities => all_vulnerabilities
+			}
+		end
+
+		def old_(other)
+			removed_vulnerabilities = other.select do |plugin_id, _v|
 				!self[plugin_id]
 			end.map do |plugin_id, vulnerability|
 				vulnerability
 			end
 
-			additional_vulnerabilities = select do |plugin_id, _v|
+			added_vulnerabilities = select do |plugin_id, _v|
 				!other[plugin_id]
 			end.map do |plugin_id, vulnerability|
 				vulnerability
 			end
 
-			mitigated_detections = other.map do |plugin_id, other_vulnerability|
+			removed_detections = other.map do |plugin_id, other_vulnerability|
 				# If we didn't already have an entry, all of the prior
-				# detections have been mitigated.
+				# detections have been added.
 				if !self[plugin_id]
 					[ plugin_id, { vulnerability: other_vulnerability, detections: other_vulnerability.detections } ]
 				else
@@ -46,7 +129,7 @@ module Nessana
 				end
 			end.to_h
 
-			additional_detections = map do |plugin_id, vulnerability|
+			added_detections = map do |plugin_id, vulnerability|
 				# If we didn't already have an entry in the prior dump, all of
 				# our detections are new.
 				if !other[plugin_id]
@@ -59,10 +142,10 @@ module Nessana
 			end.to_h
 
 			{
-				:mitigated_vulnerabilities => mitigated_vulnerabilities,
-				:new_vulnerabilities => additional_vulnerabilities,
-				:fixed_detections => mitigated_detections.values,
-				:new_detections => additional_detections.values
+				:removed_vulnerabilities => removed_vulnerabilities,
+				:new_vulnerabilities => added_vulnerabilities,
+				:removed_detections => removed_detections.values,
+				:new_detections => added_detections.values
 			}
 		end
 
