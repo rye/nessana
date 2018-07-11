@@ -1,11 +1,6 @@
 # Ignore everything in /data/
 /data/
 
-# Ignore DBM caches
-*.dir
-*.pag
-*.db
-
 # Configuration files
 *.yml
 !.rubocop.yml
