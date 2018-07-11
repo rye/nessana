@@ -1,0 +1,42 @@
+#!/usr/bin/env ruby
+
+require 'csv'
+
+data = open(ARGV[0], 'rb') do |io|
+	io.read
+end
+
+keys = []
+findings = []
+
+CSV.parse(data).each_with_index do |row, index|
+	if index == 0
+		keys = row
+	else
+		finding = {}
+		row.each_with_index.map do |item, index|
+			finding[keys[index]] = item
+		end
+		findings << finding
+	end
+end
+
+raw_findings = findings.dup.freeze
+puts "[prune] Started with #{raw_findings.count}"
+
+non_none_findings = raw_findings.select do |finding|
+	finding['Risk'] != 'None'
+end.to_a.freeze
+
+puts "[prune] Non-'None' findings: #{non_none_findings.count}"
+puts "[prune] Dumping to #{ARGV[1]} for testing"
+
+CSV.open(ARGV[1], 'wb') do |csv|
+	csv << keys
+
+	non_none_findings.each do |finding|
+		csv << finding.values
+	end
+end
+
+puts "[prune] Done!"
