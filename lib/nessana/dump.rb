@@ -43,6 +43,8 @@ module Nessana
 
 			detections = [other_detections, self_detections].flatten.uniq
 
+			t0 = Time.now
+
 			detections.each do |detection_entry|
 				in_self = self_detections.include? detection_entry
 				in_other = other_detections.include? detection_entry
@@ -59,6 +61,8 @@ module Nessana
 					detection[:status] = true
 				end
 			end
+
+			puts "Detection status setting took #{Time.now - t0} seconds"
 
 			added_plugin_ids = self_plugin_ids - other_plugin_ids
 			deleted_plugin_ids = other_plugin_ids - self_plugin_ids
