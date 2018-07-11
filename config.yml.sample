@@ -2,6 +2,8 @@
 asana:
   token: "[ASANA API TOKEN GOES HERE]"
 
+filters:
+- risk: 'None'
 
 dry_run: true
 
