@@ -2,7 +2,6 @@
 asana:
   token: "[ASANA API TOKEN GOES HERE]"
 
-cache: 'cache.dat'
 
 dry_run: true
 
