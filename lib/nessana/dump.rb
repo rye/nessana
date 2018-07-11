@@ -38,31 +38,31 @@ module Nessana
 				# If we didn't already have an entry, all of the prior
 				# detections have been mitigated.
 				if !self[plugin_id]
-					{ vulnerability: other_vulnerability, detections: other_vulnerability.detections }
+					[ plugin_id, { vulnerability: other_vulnerability, detections: other_vulnerability.detections } ]
 				else
 					current_vulnerability = self[plugin_id]
 					change_in_detections = other_vulnerability.detections - current_vulnerability.detections
-					{ vulnerability: other_vulnerability, detections: change_in_detections }
+					[ plugin_id, { vulnerability: other_vulnerability, detections: change_in_detections } ]
 				end
-			end
+			end.to_h
 
 			additional_detections = map do |plugin_id, vulnerability|
 				# If we didn't already have an entry in the prior dump, all of
 				# our detections are new.
 				if !other[plugin_id]
-					{ vulnerability: vulnerability, detections: vulnerability.detections }
+					[ plugin_id, { vulnerability: vulnerability, detections: vulnerability.detections } ]
 				else
 					prior_vulnerability = other[plugin_id]
 					change_in_detections = vulnerability.detections - prior_vulnerability.detections
-					{ vulnerability: vulnerability, detections: change_in_detections }
+					[ plugin_id, { vulnerability: vulnerability, detections: change_in_detections } ]
 				end
-			end
+			end.to_h
 
 			{
 				:mitigated_vulnerabilities => mitigated_vulnerabilities,
 				:new_vulnerabilities => additional_vulnerabilities,
-				:fixed_detections => mitigated_detections,
-				:new_detections => additional_detections
+				:fixed_detections => mitigated_detections.values,
+				:new_detections => additional_detections.values
 			}
 		end
 
