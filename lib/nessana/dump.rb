@@ -104,51 +104,6 @@ module Nessana
 			all_vulnerabilities
 		end
 
-		def old_(other)
-			removed_vulnerabilities = other.select do |plugin_id, _v|
-				!self[plugin_id]
-			end.map do |plugin_id, vulnerability|
-				vulnerability
-			end
-
-			added_vulnerabilities = select do |plugin_id, _v|
-				!other[plugin_id]
-			end.map do |plugin_id, vulnerability|
-				vulnerability
-			end
-
-			removed_detections = other.map do |plugin_id, other_vulnerability|
-				# If we didn't already have an entry, all of the prior
-				# detections have been added.
-				if !self[plugin_id]
-					[ plugin_id, { vulnerability: other_vulnerability, detections: other_vulnerability.detections } ]
-				else
-					current_vulnerability = self[plugin_id]
-					change_in_detections = other_vulnerability.detections - current_vulnerability.detections
-					[ plugin_id, { vulnerability: other_vulnerability, detections: change_in_detections } ]
-				end
-			end.to_h
-
-			added_detections = map do |plugin_id, vulnerability|
-				# If we didn't already have an entry in the prior dump, all of
-				# our detections are new.
-				if !other[plugin_id]
-					[ plugin_id, { vulnerability: vulnerability, detections: vulnerability.detections } ]
-				else
-					prior_vulnerability = other[plugin_id]
-					change_in_detections = vulnerability.detections - prior_vulnerability.detections
-					[ plugin_id, { vulnerability: vulnerability, detections: change_in_detections } ]
-				end
-			end.to_h
-
-			{
-				:removed_vulnerabilities => removed_vulnerabilities,
-				:new_vulnerabilities => added_vulnerabilities,
-				:removed_detections => removed_detections.values,
-				:new_detections => added_detections.values
-			}
-		end
-
 		def read_csv!
 			data = read_csv(filename)
 
