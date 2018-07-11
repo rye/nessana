@@ -34,21 +34,50 @@ module Nessana
 
 			diff = new_dump - old_dump
 
-			puts "The following vulnerabilities were FIXED:"
-
-			diff[:fixed_v].each do |fixed|
-				puts fixed
-				puts "=" * 80
-			end
-
 			puts "The following vulnerabilities are NEW:"
 
-			diff[:new_v].each do |new_v|
+			diff[:new_vulnerabilities].each do |new_v|
 				puts new_v
 				puts "=" * 80
 			end
 
-			# If mitigation, just print top line and synopsis.
+			puts "* * *\n" * 4
+
+			puts "The following detections are NEW:"
+
+			diff[:new_detections].each do |new_d|
+				vulnerability = new_d[:vulnerability]
+				detections = new_d[:detections].to_a
+
+				puts vulnerability.short_description
+				resulting_string = detections.map do |detection|
+					"+ #{detection.to_s}"
+				end.join("\n")
+				puts resulting_string
+			end
+
+			puts "\n" * 4
+
+			puts "The following vulnerabilities were FIXED:"
+
+			diff[:mitigated_vulnerabilities].each do |fixed|
+				puts fixed.short_description
+			end
+
+			puts "* * *\n" * 4
+
+			puts "The following detections were FIXED:"
+
+			diff[:fixed_detections].each do |fixed|
+				vulnerability = fixed[:vulnerability]
+				detections = fixed[:detections].to_a
+
+				puts vulnerability.short_description
+				resulting_string = detections.map do |detection|
+					"- #{detection.to_s}"
+				end.join("\n")
+				puts resulting_string
+			end
 
 			# Detections: print top line and synopsis for
 			# Resolved detections: just print out in - form
