@@ -12,7 +12,7 @@ module Nessana::Executor
 
 		# FIXME too many lines
 		def add_parser_hooks(parser)
-			parser.banner = "Usage: #{ARGV[0]} [options] <filename.csv>"
+			parser.banner = "Usage: #{$0} [options] <filename.csv>"
 			parser.separator ''
 			parser.separator 'Execution Options'
 
