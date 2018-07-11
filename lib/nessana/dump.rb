@@ -68,9 +68,6 @@ module Nessana
 			deleted_plugin_ids = other_plugin_ids - self_plugin_ids
 			all_plugin_ids = other_plugin_ids + added_plugin_ids
 
-			throw 'something is wrong' unless (all_plugin_ids - added_plugin_ids) - other_plugin_ids == []
-			throw 'something is wrong' unless (all_plugin_ids - deleted_plugin_ids) - self_plugin_ids == []
-
 			mitigated_vulnerabilities = deleted_plugin_ids.map do |plugin_id|
 				other[plugin_id]
 			end
