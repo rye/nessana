@@ -41,7 +41,7 @@ module Nessana
 				puts "=" * 80
 			end
 
-			puts "* * *\n" * 4
+			puts "\n" * 4
 
 			puts "The following detections are NEW:"
 
@@ -58,14 +58,6 @@ module Nessana
 
 			puts "\n" * 4
 
-			puts "The following vulnerabilities were FIXED:"
-
-			diff[:mitigated_vulnerabilities].each do |fixed|
-				puts fixed.short_description
-			end
-
-			puts "* * *\n" * 4
-
 			puts "The following detections were FIXED:"
 
 			diff[:fixed_detections].each do |fixed|
@@ -77,6 +69,14 @@ module Nessana
 					"- #{detection.to_s}"
 				end.join("\n")
 				puts resulting_string
+			end
+
+			puts "\n" * 4
+
+			puts "The following vulnerabilities were FIXED completely!"
+
+			diff[:mitigated_vulnerabilities].each do |fixed|
+				puts fixed.title_line
 			end
 
 			# Detections: print top line and synopsis for
