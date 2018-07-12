@@ -63,7 +63,7 @@ module Nessana
 				end
 			end
 
-			puts "Detection status setting took #{Time.now - t0} seconds"
+			$stderr.puts "Detection status setting took #{Time.now - t0} seconds"
 
 			added_plugin_ids = self_plugin_ids - other_plugin_ids
 			deleted_plugin_ids = other_plugin_ids - self_plugin_ids

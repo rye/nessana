@@ -1,6 +1,9 @@
 # Ignore everything in /data/
 /data/
 
+# Logs
+*.log
+
 # Configuration files
 *.yml
 !.rubocop.yml
