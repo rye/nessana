@@ -12,7 +12,7 @@ module Nessana::Executor
 
 		# FIXME too many lines
 		def add_parser_hooks(parser)
-			parser.banner = "Usage: #{ARGV[0]} [options] <filename.csv>"
+			parser.banner = "Usage: #{$0} [options] <filename.csv>"
 			parser.separator ''
 			parser.separator 'Execution Options'
 
@@ -34,8 +34,36 @@ module Nessana::Executor
 			end
 		end
 
+		# TODO deep merge?
+		def read_configuration_file!
+			merge!(read_configuration_file(self['config']))
+		end
+
+		protected
+
+		def add_config_option(parser)
+			parser.on('-c', '--config CONFIG', "Load configuration from CONFIG (default: #{self['config']})") do |config|
+				self['config'] = config
+			end
+		end
+
+		def add_usage_option(parser)
+			parser.on('-h', '--help', "Print usage summary.") do
+				puts parser
+				exit 0
+			end
+		end
+
+		def add_verbosity_option(parser)
+			parser.on('-v', '--verbosity VERBOSITY', "The level of verbosity to use. (default: #{self['verbosity']})")
+		end
+
+		def infer_mime_type(filename)
+			MIME::Types.type_for(filename).first.content_type
+		end
+
 		# FIXME too many lines
-		def read_configuration(filename)
+		def read_configuration_file(filename)
 			raise ArgumentError, 'Must pass a valid filename' unless !filename.nil?
 
 			mime_type = infer_mime_type(filename)
@@ -59,35 +87,6 @@ module Nessana::Executor
 			end
 
 			parsed.to_h
-		end
-
-		protected
-
-		def add_config_option(parser)
-			parser.on('-c', '--config CONFIG', "Load configuration from CONFIG (default: #{self['config']})") do |config|
-				self['config'] = config
-				read_configuration!
-			end
-		end
-
-		def add_usage_option(parser)
-			parser.on('-h', '--help', "Print usage summary.") do
-				puts parser
-				exit 0
-			end
-		end
-
-		def add_verbosity_option(parser)
-			parser.on('-v', '--verbosity VERBOSITY', "The level of verbosity to use. (default: #{self['verbosity']})")
-		end
-
-		def infer_mime_type(filename)
-			MIME::Types.type_for(filename).first.content_type
-		end
-
-		# TODO deep merge?
-		def read_configuration!
-			merge!(read_configuration(self['config']))
 		end
 	end
 end

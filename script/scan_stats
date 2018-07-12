@@ -1,0 +1,26 @@
+#!/usr/bin/env ruby
+
+require 'csv'
+require 'json'
+
+data = open(ARGV[0], 'rb') do |io|
+	io.read
+end
+
+keys = []
+finding_counts = {}
+
+CSV.parse(data).each_with_index do |row, index|
+	if index == 0
+		keys = row
+	else
+		finding = {}
+		row.each_with_index.map do |item, index|
+			finding[keys[index]] = item
+		end
+		finding_counts[finding["Risk"]] ||= 0
+		finding_counts[finding["Risk"]] += 1
+	end
+end
+
+puts JSON.generate(finding_counts)

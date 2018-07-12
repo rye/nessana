@@ -19,6 +19,7 @@ DESCRIPTION
 	s.executables = 'nessana'
 
 	s.add_dependency 'asana', '~> 0.6.3'
+	s.add_dependency 'fastcsv', '~> 0.0.6'
 	s.add_dependency 'mime-types', '~> 3.1'
 
 	s.add_development_dependency 'guard', '~> 2.14'
