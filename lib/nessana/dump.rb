@@ -1,6 +1,7 @@
 require 'time'
 
 require 'csv'
+require 'fastcsv'
 require 'nessana/detection'
 require 'nessana/vulnerability'
 
@@ -116,8 +117,13 @@ module Nessana
 		def read_csv(filename)
 			dump_data = {}
 
-			CSV.read(filename).each_with_index do |row, index|
-				next if index == 0
+			first_row = true
+
+			FastCSV.foreach(filename) do |row|
+				if first_row
+					first_row = false
+					next
+				end
 
 				row_nessus_data = row[0..3] + row[7..-1]
 				row_detection_data = row[4..6]
