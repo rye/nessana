@@ -86,9 +86,9 @@ module Nessana
 			diff = new_dump - old_dump
 
 			diff.sort do |vulnerability_a, vulnerability_b|
-				vulnerability_a[:plugin_id].to_i <=> vulnerability_b[:plugin_id].to_i
+				vulnerability_a.plugin_id.to_i <=> vulnerability_b.plugin_id.to_i
 			end.sort do |vulnerability_a, vulnerability_b|
-				vulnerability_a[:cvss].to_f <=> vulnerability_b[:cvss].to_f
+				vulnerability_a.cvss.to_f <=> vulnerability_b.cvss.to_f
 			end.each do |v|
 				puts "#{v}
 

@@ -87,7 +87,7 @@ module Nessana
 				end
 
 				plugin_detections = detections.select do |detection_entry|
-					detection_entry.keys.first == vulnerability[:plugin_id]
+					detection_entry.keys.first == vulnerability.plugin_id
 				end.map do |detection_entry|
 					detection_entry.values.first
 				end
