@@ -3,7 +3,7 @@ require 'ostruct'
 require 'nessana/vulnerability'
 
 module Nessana
-	class Filter < Hash
+	class Filter < ::Hash
 		def initialize(hash)
 			super
 
