@@ -120,6 +120,8 @@ module Nessana
 			first_row = true
 
 			open(filename, 'rb') do |io|
+				io.advise(:willneed)
+				io.advise(:noreuse)
 				io.advise(:sequential)
 
 				FastCSV.raw_parse(io) do |row|
