@@ -119,24 +119,30 @@ module Nessana
 
 			first_row = true
 
-			FastCSV.foreach(filename) do |row|
-				if first_row
-					first_row = false
-					next
+			open(filename, 'rb') do |io|
+				io.advise(:willneed)
+				io.advise(:noreuse)
+				io.advise(:sequential)
+
+				FastCSV.raw_parse(io) do |row|
+					if first_row
+						first_row = false
+						next
+					end
+
+					row_nessus_data = row[0..3] + row[7..-1]
+					row_detection_data = row[4..6]
+
+					plugin_id = row[0]
+
+					unless !!dump_data[plugin_id]
+						dump_data[plugin_id] = Vulnerability.new(*row_nessus_data)
+					end
+
+					row_detection = Detection.new(*row_detection_data)
+
+					dump_data[plugin_id].add_detection(row_detection)
 				end
-
-				row_nessus_data = row[0..3] + row[7..-1]
-				row_detection_data = row[4..6]
-
-				plugin_id = row[0]
-
-				unless !!dump_data[plugin_id]
-					dump_data[plugin_id] = Vulnerability.new(*row_nessus_data)
-				end
-
-				row_detection = Detection.new(*row_detection_data)
-
-				dump_data[plugin_id].add_detection(row_detection)
 			end
 
 			dump_data
