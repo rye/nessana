@@ -25,7 +25,7 @@ module Nessana
 				@status == other.status || false
 		end
 
-		alias :eql? :==
+		alias eql? ==
 
 		protected
 
