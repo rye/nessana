@@ -86,19 +86,15 @@ module Nessana
 			diff = new_dump - old_dump
 
 			diff.sort do |vulnerability_a, vulnerability_b|
-				vulnerability_a[:plugin_id].to_i <=> vulnerability_b[:plugin_id].to_i
+				vulnerability_a.plugin_id.to_i <=> vulnerability_b.plugin_id.to_i
 			end.sort do |vulnerability_a, vulnerability_b|
-				vulnerability_a[:cvss].to_f <=> vulnerability_b[:cvss].to_f
+				vulnerability_a.cvss.to_f <=> vulnerability_b.cvss.to_f
 			end.each do |v|
 				puts "#{v}
 
 DISCOVERIES"
-				v.detections.sort do |detection_a, detection_b|
-					detection_a[:port] <=> detection_b[:port]
-				end.sort do |detection_a, detection_b|
-					detection_a[:host] <=> detection_b[:host]
-				end.each do |detection|
-					if detection[:status] && detection[:status] != true
+				v.detections.sort_by(&:port).sort_by(&:host).each do |detection|
+					if detection.status && detection.status != true
 						puts detection.to_s
 					end
 				end

@@ -1,18 +1,36 @@
 module Nessana
-	class Detection < Hash
+	class Detection
+		attr_reader :host, :protocol, :port
+		attr_accessor :status
+
 		def initialize(host, protocol, port, status = nil)
-			self[:host], self[:protocol], self[:port] = host, protocol, port
-			self[:status] = status
+			@host = host
+			@protocol = protocol
+			@port = port
+			@status = status
 		end
 
 		def to_s
-			"#{self[:status] ? status_prefix : ''}#{self[:host]}:#{self[:port]}/#{self[:protocol]}"
+			"#{@status ? status_prefix : ''}#{@host}:#{@port}/#{@protocol}"
 		end
+
+		def hash
+			"#{@host}:#{@port}/#{@protocol}".hash
+		end
+
+		def ==(other)
+			@host == other.host &&
+				@protocol == other.protocol &&
+				@port == other.port &&
+				@status == other.status || false
+		end
+
+		alias eql? ==
 
 		protected
 
 		def status_prefix
-			case self[:status]
+			case @status
 			when :added
 				'+ '
 			when :removed

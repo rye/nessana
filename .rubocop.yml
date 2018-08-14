@@ -11,3 +11,6 @@ Layout/IndentationWidth:
 
 Layout/Tab:
   Enabled: false
+
+Layout/MultilineOperationIndentation:
+  Enabled: false

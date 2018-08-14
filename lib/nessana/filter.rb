@@ -3,7 +3,7 @@ require 'ostruct'
 require 'nessana/vulnerability'
 
 module Nessana
-	class Filter < Hash
+	class Filter < ::Hash
 		def initialize(hash)
 			super
 
@@ -18,9 +18,9 @@ module Nessana
 			each do |key, value|
 				case value
 				when Regexp
-					return true if vulnerability[key.to_sym] =~ value
+					return true if vulnerability.send(key.to_sym) =~ value
 				else
-					return true if vulnerability[key.to_sym] == value
+					return true if vulnerability.send(key.to_sym) == value
 				end
 			end
 
