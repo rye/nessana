@@ -93,11 +93,7 @@ module Nessana
 				puts "#{v}
 
 DISCOVERIES"
-				v.detections.sort do |detection_a, detection_b|
-					detection_a.port <=> detection_b.port
-				end.sort do |detection_a, detection_b|
-					detection_a.host <=> detection_b.host
-				end.each do |detection|
+				v.detections.sort_by(&:port).sort_by(&:host).each do |detection|
 					if detection.status && detection.status != true
 						puts detection.to_s
 					end
