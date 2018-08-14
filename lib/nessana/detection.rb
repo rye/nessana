@@ -12,6 +12,10 @@ module Nessana
 			"#{@status ? status_prefix : ''}#{@host}:#{@port}/#{@protocol}"
 		end
 
+		def hash
+			"#{@host}:#{@port}/#{@protocol}".hash
+		end
+
 		protected
 
 		def status_prefix
