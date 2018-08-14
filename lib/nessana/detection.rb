@@ -4,7 +4,9 @@ module Nessana
 		attr_accessor :status
 
 		def initialize(host, protocol, port, status = nil)
-			@host, @protocol, @port = host, protocol, port
+			@host = host
+			@protocol = protocol
+			@port = port
 			@status = status
 		end
 
