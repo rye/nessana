@@ -16,6 +16,15 @@ module Nessana
 			"#{@host}:#{@port}/#{@protocol}".hash
 		end
 
+		def ==(other)
+			@host == other.host &&
+				@protocol == other.protocol &&
+				@port == other.port &&
+				@status == other.status || false
+		end
+
+		alias :eql? :==
+
 		protected
 
 		def status_prefix
