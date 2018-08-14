@@ -28,17 +28,13 @@ module Nessana
 
 			other_detections = Set.new(other.map do |plugin_id, vulnerability|
 				vulnerability.detections.map do |detection|
-					{
-						plugin_id => detection.to_h
-					}
+					{ plugin_id => detection }
 				end
 			end.flatten)
 
 			self_detections = Set.new(map do |plugin_id, vulnerability|
 				vulnerability.detections.map do |detection|
-					{
-						plugin_id => detection.to_h
-					}
+					{ plugin_id => detection }
 				end
 			end.flatten)
 
@@ -53,13 +49,13 @@ module Nessana
 				detection = detection_entry.values.first
 
 				if in_self && in_other
-					detection[:status] = :present
+					detection.status = :present
 				elsif !in_self && in_other
-					detection[:status] = :removed
+					detection.status = :removed
 				elsif in_self && !in_other
-					detection[:status] = :added
+					detection.status = :added
 				else
-					detection[:status] = true
+					detection.status = true
 				end
 			end
 
@@ -93,7 +89,7 @@ module Nessana
 				end
 
 				vulnerability.detections = plugin_detections.map do |detection|
-					Detection.new(detection[:host], detection[:protocol], detection[:port], detection[:status])
+					detection.dup
 				end
 
 				vulnerability
