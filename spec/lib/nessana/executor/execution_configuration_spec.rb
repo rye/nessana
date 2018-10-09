@@ -13,11 +13,11 @@ end
 describe Nessana::Executor::ExecutionConfiguration do
 	it { is_expected.to be_a(Hash) }
 
-	describe '#read_configuration!' do
+	describe '#read_configuration_file!' do
 		it 'calls #merge!' do
 			allow(subject).to receive(:merge!)
 			expect(subject).to receive(:merge!)
-			subject.send(:read_configuration!)
+			subject.send(:read_configuration_file!)
 		end
 	end
 end
