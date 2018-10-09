@@ -1,8 +1,11 @@
-require 'rspec'
-require 'rspec/expectations'
-
 require 'simplecov'
 SimpleCov.start
+
+require 'coveralls'
+Coveralls.wear!
+
+require 'rspec'
+require 'rspec/expectations'
 
 RSpec.configure do |config|
 end
