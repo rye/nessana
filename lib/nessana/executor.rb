@@ -27,61 +27,12 @@ module Nessana
 				return
 			end
 
-			# TODO don't be silent
-
 			filters = @configuration['filters'].map do |filter_hash|
 				Filter.new(filter_hash)
 			end
 
 			old_dump = @configuration['old_filename'] ? Dump.new(@configuration['old_filename'], filters) : Dump.new
 			new_dump = Dump.new(@configuration['new_filename'], filters)
-
-			# diff = new_dump.old_old_dump
-
-			# puts "The following vulnerabilities are NEW:"
-
-			# diff[:added_vulnerabilities].each do |new_v|
-			# 	puts new_v
-			# 	puts "=" * 80
-			# end
-
-			# puts "\n" * 4
-
-			# puts "The following detections are NEW:"
-
-			# diff[:added_detections].each do |new_d|
-			# 	vulnerability = new_d[:vulnerability]
-			# 	detections = new_d[:detections].to_a
-
-			# 	puts vulnerability.short_description
-			# 	resulting_string = detections.map do |detection|
-			# 		"+ #{detection.to_s}"
-			# 	end.join("\n")
-			# 	puts resulting_string
-			# end
-
-			# puts "\n" * 4
-
-			# puts "The following detections were FIXED:"
-
-			# diff[:removed_detections].each do |fixed|
-			# 	vulnerability = fixed[:vulnerability]
-			# 	detections = fixed[:detections].to_a
-
-			# 	puts vulnerability.short_description
-			# 	resulting_string = detections.map do |detection|
-			# 		"- #{detection.to_s}"
-			# 	end.join("\n")
-			# 	puts resulting_string
-			# end
-
-			# puts "\n" * 4
-
-			# puts "The following vulnerabilities were FIXED completely!"
-
-			# diff[:removed_vulnerabilities].each do |fixed|
-			# 	puts fixed.title_line
-			# end
 
 			diff = new_dump - old_dump
 
@@ -107,14 +58,6 @@ DISCOVERIES"
 				io = open(@configuration['performance'], 'wb')
 				printer.print(io, {})
 			end
-
-			# Detections: print top line and synopsis for
-			# Resolved detections: just print out in - form
-			# Additional detections: print out + form
-
-			# TODO check asana to see what needs to get created
-			# TODO ask to create tasks
-			# TODO automatically create tasks
 		end
 
 		def self.parse(*argv)
