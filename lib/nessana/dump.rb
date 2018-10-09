@@ -22,7 +22,7 @@ module Nessana
 
 					read_csv!
 
-					spinner.stop('Done!')
+					spinner.success('Done!')
 				else
 					throw 'file not readable; sad face'
 				end
