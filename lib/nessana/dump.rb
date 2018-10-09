@@ -2,6 +2,8 @@ require 'time'
 
 require 'csv'
 require 'fastcsv'
+require 'tty-spinner'
+
 require 'nessana/detection'
 require 'nessana/vulnerability'
 
@@ -15,7 +17,16 @@ module Nessana
 
 			if @filename
 				if File.readable?(@filename)
+					spinner_options = {
+						success_mark: "\u2713".encode('utf-8'),
+						format: :dots_3
+					}
+					spinner = TTY::Spinner.new("[:spinner] Loading #{@filename}...", **spinner_options)
+					spinner.auto_spin
+
 					read_csv!
+
+					spinner.success('done!')
 				else
 					throw 'file not readable; sad face'
 				end
