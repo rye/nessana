@@ -17,7 +17,11 @@ module Nessana
 
 			if @filename
 				if File.readable?(@filename)
-					spinner = TTY::Spinner.new("[:spinner] Loading #{@filename}...", format: :dots_3)
+					spinner_options = {
+						success_mark: "\u2713".encode('utf-8'),
+						format: :dots_3
+					}
+					spinner = TTY::Spinner.new("[:spinner] Loading #{@filename}...", **spinner_options)
 					spinner.auto_spin
 
 					read_csv!
