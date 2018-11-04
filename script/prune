@@ -2,13 +2,13 @@
 
 require 'csv'
 
-data = open(ARGV[0], 'rb', &:read)
+data = File.open(ARGV[0], 'rb', &:read)
 
 keys = []
 findings = []
 
-CSV.parse(data).each_with_index do |row, index|
-	if index == 0
+CSV.parse(data).each_with_index do |row, row_index|
+	if row_index.zero?
 		keys = row
 	else
 		finding = {}
