@@ -13,3 +13,6 @@ Layout/Tab:
 
 Layout/MultilineOperationIndentation:
   Enabled: false
+
+Layout/AccessModifierIndentation:
+  Enabled: false
