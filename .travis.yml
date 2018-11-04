@@ -8,4 +8,4 @@ rvm:
 
 script:
   - bundle exec rspec
-  - bundle exec rubocop
+  - [ "$RUBY_VERSION" == "2.5.3" ] && bundle exec rubocop
