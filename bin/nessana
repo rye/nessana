@@ -1,5 +1,1 @@
 #!/usr/bin/env ruby
-
-require 'nessana/executor'
-
-Nessana::Executor.execute!

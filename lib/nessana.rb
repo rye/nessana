@@ -1,6 +1,1 @@
-require 'nessana/detection'
-require 'nessana/dump'
-require 'nessana/executor'
-require 'nessana/filter'
 require 'nessana/version'
-require 'nessana/vulnerability'
