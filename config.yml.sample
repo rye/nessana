@@ -1,1 +1,11 @@
 ---
+database:
+  type: 'sqlite'
+  filename: 'example.db'
+  # or a more complicated example,
+  # type: 'postgres'
+  # user: 'dbuser'
+  # password: 'dbpasswd'
+  # host: 'host'
+  # port: 5432
+  # max_connections: 16
