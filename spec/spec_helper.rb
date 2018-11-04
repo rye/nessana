@@ -10,6 +10,10 @@ require 'rspec/expectations'
 RSpec.configure do |config|
 end
 
+# e.g.:
+# describe 'nessana' do
+# 	it { is_expected.to be_requirable }
+# end
 RSpec::Matchers.define :be_requirable do
 	match do |file|
 		begin
