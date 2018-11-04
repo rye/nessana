@@ -3,9 +3,7 @@
 require 'csv'
 require 'json'
 
-data = open(ARGV[0], 'rb') do |io|
-	io.read
-end
+data = open(ARGV[0], 'rb', &:read)
 
 keys = []
 finding_counts = {}
