@@ -14,5 +14,11 @@ Layout/Tab:
 Layout/MultilineOperationIndentation:
   Enabled: false
 
+Layout/MultilineMethodCallIndentation:
+  Enabled: false
+
 Layout/AccessModifierIndentation:
+  Enabled: false
+
+Style/FrozenStringLiteralComment:
   Enabled: false
