@@ -102,14 +102,6 @@ module Nessana
 			deleted_plugin_ids = other_plugin_ids - self_plugin_ids
 			all_plugin_ids = other_plugin_ids + added_plugin_ids
 
-			mitigated_vulnerabilities = deleted_plugin_ids.map do |plugin_id|
-				other[plugin_id]
-			end
-
-			new_vulnerabilities = added_plugin_ids.map do |plugin_id|
-				self[plugin_id]
-			end
-
 			all_vulnerabilities = all_plugin_ids.map do |plugin_id|
 				vulnerability = nil
 
