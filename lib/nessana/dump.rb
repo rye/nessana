@@ -160,7 +160,7 @@ module Nessana
 
 					plugin_id = row[0]
 
-					unless !!dump_data[plugin_id]
+					unless dump_data[plugin_id]
 						dump_data[plugin_id] = Vulnerability.new(*row_nessus_data)
 					end
 
