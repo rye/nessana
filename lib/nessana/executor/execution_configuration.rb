@@ -64,7 +64,7 @@ module Nessana::Executor
 
 		# FIXME too many lines
 		def read_configuration_file(filename)
-			raise ArgumentError, 'Must pass a valid filename' unless !filename.nil?
+			raise ArgumentError, 'Must pass a valid filename' if filename.nil?
 
 			mime_type = infer_mime_type(filename)
 			parsed = nil
