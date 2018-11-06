@@ -10,9 +10,10 @@ module Nessana::Executor
 			self['dump_filename'] = nil
 		end
 
-		# FIXME too many lines
+		# FIXME: too many lines
 		def add_parser_hooks(parser)
 			parser.banner = "Usage: #{$PROGRAM_NAME} [options] <filename.csv>"
+
 			parser.separator ''
 			parser.separator 'Execution Options'
 
@@ -20,6 +21,7 @@ module Nessana::Executor
 
 			parser.separator ''
 			parser.separator 'General Options'
+
 			add_usage_option(parser)
 			add_verbosity_option(parser)
 
@@ -34,7 +36,7 @@ module Nessana::Executor
 			end
 		end
 
-		# TODO deep merge?
+		# TODO: deep merge?
 		def read_configuration_file!
 			merge!(read_configuration_file(self['config']))
 		end
@@ -62,7 +64,7 @@ module Nessana::Executor
 			MIME::Types.type_for(filename).first.content_type
 		end
 
-		# FIXME too many lines
+		# FIXME: too many lines
 		def read_configuration_file(filename)
 			raise ArgumentError, 'Must pass a valid filename' if filename.nil?
 
