@@ -130,7 +130,7 @@ module Nessana
 		def read_csv!
 			data = read_csv(filename)
 
-			filtered_data = data.select do |plugin_id, vulnerability|
+			filtered_data = data.select do |_, vulnerability|
 				!vulnerability.matches?(@filters)
 			end
 
