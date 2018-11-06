@@ -9,7 +9,7 @@ keys = []
 finding_counts = {}
 
 CSV.parse(data).each_with_index do |row, row_index|
-	if row_index == 0
+	if row_index.zero?
 		keys = row
 	else
 		finding = {}
