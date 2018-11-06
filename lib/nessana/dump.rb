@@ -34,10 +34,22 @@ module Nessana
 		end
 
 		def -(other)
+			spinner_options = {
+				success_mark: "\u2713".encode('utf-8'),
+				format: :dots_3
+			}
+
+			spinner = TTY::Spinner.new("[:spinner] :action...", **spinner_options)
+			spinner.update(action: "Generating detections...")
+
 			other_plugin_ids = other.keys
 			self_plugin_ids = keys
 
+			spinner.update(action: "Finding L detections")
+
 			other_detection_pairs = other.map do |plugin_id, vulnerability|
+				spinner.spin
+
 				vulnerability.detections.map do |detection|
 					{ plugin_id => detection }
 				end
@@ -45,7 +57,11 @@ module Nessana
 
 			other_detections = Set.new(other_detection_pairs.flatten)
 
+			spinner.update(action: "Finding R detections")
+
 			detection_pairs = map do |plugin_id, vulnerability|
+				spinner.spin
+
 				vulnerability.detections.map do |detection|
 					{ plugin_id => detection }
 				end
@@ -53,9 +69,13 @@ module Nessana
 
 			self_detections = Set.new(detection_pairs.flatten)
 
+			spinner.update(action: "Joining detection sets")
+			spinner.auto_spin
+
 			detections = Set.new([other_detections, self_detections]).flatten
 
-			t0 = Time.now
+			spinner.update(action: "Processing detections")
+			spinner.auto_spin
 
 			detections.each do |detection_entry|
 				in_self = self_detections.include? detection_entry
@@ -74,7 +94,7 @@ module Nessana
 				end
 			end
 
-			$stderr.puts "Detection status setting took #{Time.now - t0} seconds"
+			spinner.success('done!')
 
 			added_plugin_ids = self_plugin_ids - other_plugin_ids
 			deleted_plugin_ids = other_plugin_ids - self_plugin_ids
