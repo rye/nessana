@@ -48,7 +48,8 @@ module Nessana
 			spinner.update(action: "Finding L detections")
 
 			other_detection_pairs = other.map do |plugin_id, vulnerability|
-				spinner.spin
+				spinner.update(action: "Finding L detections (#{plugin_id})")
+				spinner.auto_spin
 
 				vulnerability.detections.map do |detection|
 					{ plugin_id => detection }
@@ -60,7 +61,8 @@ module Nessana
 			spinner.update(action: "Finding R detections")
 
 			detection_pairs = map do |plugin_id, vulnerability|
-				spinner.spin
+				spinner.update(action: "Finding R detections (#{plugin_id})")
+				spinner.auto_spin
 
 				vulnerability.detections.map do |detection|
 					{ plugin_id => detection }
