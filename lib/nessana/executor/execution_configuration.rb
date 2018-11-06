@@ -69,21 +69,15 @@ module Nessana::Executor
 			mime_type = infer_mime_type(filename)
 			parsed = nil
 
-			io = open(filename, 'rb')
+			data = File.open(filename, 'rb', &:read)
 
-			begin
-				data = io.read
-
-				case mime_type
-				when /ya?ml/
-					require 'yaml'
-					parsed = YAML.load(data)
-				when /json/
-					require 'json'
-					parsed = JSON.parse(data)
-				end
-			ensure
-				io.close unless io.closed?
+			case mime_type
+			when /ya?ml/
+				require 'yaml'
+				parsed = YAML.safe_load(data)
+			when /json/
+				require 'json'
+				parsed = JSON.parse(data)
 			end
 
 			parsed.to_h
