@@ -2,9 +2,7 @@
 
 require 'csv'
 
-data = open(ARGV[0], 'rb') do |io|
-	io.read
-end
+data = File.open(ARGV[0], 'rb', &:read)
 
 keys = []
 findings = []

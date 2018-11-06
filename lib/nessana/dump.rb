@@ -144,7 +144,7 @@ module Nessana
 
 			first_row = true
 
-			open(filename, 'rb') do |io|
+			File.open(filename, 'rb') do |io|
 				io.advise(:willneed)
 				io.advise(:noreuse)
 				io.advise(:sequential)
