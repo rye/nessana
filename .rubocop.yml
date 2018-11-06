@@ -1,7 +1,7 @@
 ---
 AllCops:
   Exclude:
-    - 'bin/nessana_old'
+    - bin/nessana_old
 
 Layout/IndentHeredoc:
   Enabled: false
