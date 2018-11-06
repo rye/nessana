@@ -22,8 +22,8 @@ end
 raw_findings = findings.dup.freeze
 puts "[prune] Started with #{raw_findings.count}"
 
-non_none_findings = raw_findings.select do |finding|
-	finding['Risk'] != 'None'
+non_none_findings = raw_findings.reject do |finding|
+	finding['Risk'] == 'None'
 end.to_a.freeze
 
 puts "[prune] Non-'None' findings: #{non_none_findings.count}"
