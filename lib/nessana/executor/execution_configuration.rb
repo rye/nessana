@@ -48,7 +48,7 @@ module Nessana::Executor
 		end
 
 		def add_usage_option(parser)
-			parser.on('-h', '--help', "Print usage summary.") do
+			parser.on('-h', '--help', 'Print usage summary.') do
 				puts parser
 				exit 0
 			end

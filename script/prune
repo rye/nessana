@@ -39,4 +39,4 @@ CSV.open(ARGV[1], 'wb') do |csv|
 	end
 end
 
-puts "[prune] Done!"
+puts '[prune] Done!'

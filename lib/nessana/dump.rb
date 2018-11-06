@@ -39,13 +39,13 @@ module Nessana
 				format: :dots_3
 			}
 
-			spinner = TTY::Spinner.new("[:spinner] :action...", **spinner_options)
-			spinner.update(action: "Generating detections...")
+			spinner = TTY::Spinner.new('[:spinner] :action...', **spinner_options)
+			spinner.update(action: 'Generating detections...')
 
 			other_plugin_ids = other.keys
 			self_plugin_ids = keys
 
-			spinner.update(action: "Finding L detections")
+			spinner.update(action: 'Finding L detections')
 
 			other_detection_pairs = other.map do |plugin_id, vulnerability|
 				spinner.update(action: "Finding L detections (#{plugin_id})")
@@ -58,7 +58,7 @@ module Nessana
 
 			other_detections = Set.new(other_detection_pairs.flatten)
 
-			spinner.update(action: "Finding R detections")
+			spinner.update(action: 'Finding R detections')
 
 			detection_pairs = map do |plugin_id, vulnerability|
 				spinner.update(action: "Finding R detections (#{plugin_id})")
@@ -71,12 +71,12 @@ module Nessana
 
 			self_detections = Set.new(detection_pairs.flatten)
 
-			spinner.update(action: "Joining detection sets")
+			spinner.update(action: 'Joining detection sets')
 			spinner.auto_spin
 
 			detections = Set.new([other_detections, self_detections]).flatten
 
-			spinner.update(action: "Processing detections")
+			spinner.update(action: 'Processing detections')
 			spinner.auto_spin
 
 			detections.each do |detection_entry|
