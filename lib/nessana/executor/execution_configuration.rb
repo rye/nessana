@@ -76,7 +76,7 @@ module Nessana::Executor
 			case mime_type
 			when /ya?ml/
 				require 'yaml'
-				parsed = YAML.safe_load(data)
+				parsed = YAML.safe_load(data, [Regexp])
 			when /json/
 				require 'json'
 				parsed = JSON.parse(data)
