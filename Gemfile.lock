@@ -125,7 +125,7 @@ GEM
     tty-cursor (0.6.0)
     tty-spinner (0.8.0)
       tty-cursor (>= 0.5.0)
-    unicode-display_width (1.4.0)
+    unicode-display_width (1.4.1)
 
 PLATFORMS
   ruby
