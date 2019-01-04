@@ -16,11 +16,15 @@ module Nessana
 
 		def applies_to?(vulnerability)
 			each do |key, value|
+				method = key.to_sym
+
+				return false unless vulnerability.respond_to?(method)
+
 				case value
 				when Regexp
-					return true if vulnerability.send(key.to_sym) =~ value
+					return true if vulnerability.send(method) =~ value
 				else
-					return true if vulnerability.send(key.to_sym) == value
+					return true if vulnerability.send(method) == value
 				end
 			end
 
