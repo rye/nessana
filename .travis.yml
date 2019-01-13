@@ -9,6 +9,6 @@ before_install:
   - gem install bundler --version 2.0.1
 
 script:
-  - true
-  # - bundle exec rspec
-  # - bundle exec rubocop
+  - bundle exec rspec
+  - bash <(curl -s https://codecov.io/bash)
+#  - bundle exec rubocop

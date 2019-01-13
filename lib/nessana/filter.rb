@@ -22,9 +22,9 @@ module Nessana
 
 				case value
 				when Regexp
-					return true if vulnerability.send(method) =~ value
+					return true if vulnerability.send(method).to_s =~ value
 				else
-					return true if vulnerability.send(method) == value
+					return true if vulnerability.send(method).to_s == value
 				end
 			end
 
