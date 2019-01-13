@@ -23,6 +23,7 @@ DESCRIPTION
 	s.add_dependency 'mime-types', '~> 3.1'
 	s.add_dependency 'tty-spinner', '~> 0.8.0'
 
+	s.add_development_dependency 'codecov'
 	s.add_development_dependency 'coveralls', '~> 0.8.22'
 	s.add_development_dependency 'guard', '~> 2.14'
 	s.add_development_dependency 'guard-rspec', '~> 4.7'

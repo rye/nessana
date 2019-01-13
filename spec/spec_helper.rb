@@ -4,6 +4,12 @@ SimpleCov.start
 require 'coveralls'
 Coveralls.wear!
 
+require 'codecov'
+SimpleCov.formatter = SimpleCov::Formatter::MultiFormatter.new([
+	SimpleCov::Formatter::Codecov,
+	Coveralls::SimpleCov::Formatter,
+])
+
 require 'rspec'
 require 'rspec/expectations'
 
