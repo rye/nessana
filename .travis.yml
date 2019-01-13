@@ -11,4 +11,4 @@ before_install:
 script:
   - bundle exec rspec
   - bash <(curl -s https://codecov.io/bash)
-  - bundle exec rubocop
+#  - bundle exec rubocop
