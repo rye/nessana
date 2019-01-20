@@ -6,6 +6,7 @@
 
 # Configuration files
 *.yml
+!.codecov.yml
 !.rubocop.yml
 !.travis.yml
 

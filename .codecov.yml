@@ -1,0 +1,12 @@
+---
+comment: off
+
+coverage:
+  status:
+    project:
+      default: false
+      lib:
+        paths: "!spec/"
+      spec:
+        paths: "spec/"
+        target: 100%
