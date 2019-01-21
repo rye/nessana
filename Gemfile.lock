@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    nessana (0.1.0.pre.alpha.4)
+    nessana (0.1.0.pre.beta.1)
       asana (~> 0.6.3)
       fastcsv (~> 0.0.6)
       mime-types (~> 3.1)
@@ -136,7 +136,7 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
-  codecov
+  codecov (~> 0.1.14)
   coveralls (~> 0.8.22)
   guard (~> 2.14)
   guard-rspec (~> 4.7)
