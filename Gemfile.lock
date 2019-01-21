@@ -136,7 +136,7 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
-  codecov
+  codecov (~> 0.1.14)
   coveralls (~> 0.8.22)
   guard (~> 2.14)
   guard-rspec (~> 4.7)
