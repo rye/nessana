@@ -28,8 +28,6 @@ DESCRIPTION
 	s.add_development_dependency 'pry', '~> 0.12.2'
 	s.add_development_dependency 'rspec', '~> 3.7'
 	s.add_development_dependency 'rubocop', '~> 0.57'
-	s.add_development_dependency 'ruby-prof', '~> 0.17.0'
-	s.add_development_dependency 'ruby-prof-flamegraph', '~> 0.3.0'
 	s.add_development_dependency 'simplecov', '~> 0.16.1'
 
 	s.required_ruby_version = '~> 2.4'

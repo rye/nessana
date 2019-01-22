@@ -1,7 +1,5 @@
 require 'optparse'
 require 'pp'
-require 'ruby-prof'
-require 'ruby-prof-flamegraph'
 
 require 'nessana/executor/execution_configuration'
 require 'nessana/filter'
@@ -15,8 +13,6 @@ module Nessana
 
 		def self.execute!(argv = ARGV)
 			parse!(*argv)
-
-			RubyProf.start if !!@configuration['performance']
 
 			unless @configuration['old_filename']
 				$stderr.puts 'No old dump filename given; will assume no prior knowledge.'
@@ -50,13 +46,6 @@ DISCOVERIES"
 					end
 				end
 				puts "\n" * 2
-			end
-
-			if !!@configuration['performance']
-				result = RubyProf.stop
-				printer = RubyProf::FlameGraphPrinter.new(result)
-				io = open(@configuration['performance'], 'wb')
-				printer.print(io, {})
 			end
 		end
 
