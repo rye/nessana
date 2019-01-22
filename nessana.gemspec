@@ -20,7 +20,7 @@ DESCRIPTION
 
 	s.add_dependency 'fastcsv', '~> 0.0.6'
 	s.add_dependency 'mime-types', '~> 3.1'
-	s.add_dependency 'tty-spinner', '~> 0.8.0'
+	s.add_dependency 'tty-spinner', '~> 0.9.0'
 
 	s.add_development_dependency 'codecov', '~> 0.1.14'
 	s.add_development_dependency 'guard', '~> 2.14'
