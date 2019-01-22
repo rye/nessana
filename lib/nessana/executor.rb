@@ -1,5 +1,6 @@
 require 'optparse'
 require 'pp'
+require 'tty-spinner'
 
 require 'nessana/executor/execution_configuration'
 require 'nessana/filter'
@@ -27,10 +28,37 @@ module Nessana
 				Filter.new(filter_hash)
 			end
 
-			old_dump = @configuration['old_filename'] ? Dump.read(@configuration['old_filename'], filters) : Dump.new
+			spinner_options = {
+				success_mark: "\u2713".encode('utf-8'),
+				format: :dots_3
+			}
+
+			old_dump = nil
+
+			if @configuration['old_filename']
+				spinner = TTY::Spinner.new("[:spinner] Loading #{@configuration['old_filename']}...", **spinner_options)
+				spinner.auto_spin
+
+				old_dump = Dump.read(@configuration['old_filename'], filters)
+
+				spinner.success('done!')
+			else
+				old_dump = Dump.new
+			end
+
+			spinner = TTY::Spinner.new("[:spinner] Loading #{@configuration['old_filename']}...", **spinner_options)
+			spinner.auto_spin
+
 			new_dump = Dump.read(@configuration['new_filename'], filters)
 
+			spinner.success('done!')
+
+			spinner = TTY::Spinner.new('[:spinner] Comparing dumps...', **spinner_options)
+			spinner.auto_spin
+
 			diff = new_dump - old_dump
+
+			spinner.success('done!')
 
 			diff.sort do |vulnerability_a, vulnerability_b|
 				vulnerability_a.plugin_id.to_i <=> vulnerability_b.plugin_id.to_i

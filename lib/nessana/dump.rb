@@ -2,7 +2,6 @@ require 'time'
 
 require 'csv'
 require 'fastcsv'
-require 'tty-spinner'
 
 require 'nessana/detection'
 require 'nessana/vulnerability'
@@ -14,17 +13,7 @@ module Nessana
 		def self.read(file, filters = [])
 			throw "Cannot read from #{file.inspect}, not readable" unless File.readable?(file)
 
-			spinner_options = {
-				success_mark: "\u2713".encode('utf-8'),
-				format: :dots_3
-			}
-
-			spinner = TTY::Spinner.new("[:spinner] Loading #{file}...", **spinner_options)
-			spinner.auto_spin
-
 			data = read_csv(file)
-
-			spinner.success('done!')
 
 			self.new(data, filters)
 		end
@@ -40,23 +29,10 @@ module Nessana
 		end
 
 		def -(other)
-			spinner_options = {
-				success_mark: "\u2713".encode('utf-8'),
-				format: :dots_3
-			}
-
-			spinner = TTY::Spinner.new('[:spinner] :action...', **spinner_options)
-			spinner.update(action: 'Generating detections...')
-
 			other_plugin_ids = other.keys
 			self_plugin_ids = keys
 
-			spinner.update(action: 'Finding L detections')
-
 			other_detection_pairs = other.map do |plugin_id, vulnerability|
-				spinner.update(action: "Finding L detections (#{plugin_id})")
-				spinner.auto_spin
-
 				vulnerability.detections.map do |detection|
 					{ plugin_id => detection }
 				end
@@ -64,12 +40,7 @@ module Nessana
 
 			other_detections = Set.new(other_detection_pairs.flatten)
 
-			spinner.update(action: 'Finding R detections')
-
 			detection_pairs = map do |plugin_id, vulnerability|
-				spinner.update(action: "Finding R detections (#{plugin_id})")
-				spinner.auto_spin
-
 				vulnerability.detections.map do |detection|
 					{ plugin_id => detection }
 				end
@@ -77,13 +48,7 @@ module Nessana
 
 			self_detections = Set.new(detection_pairs.flatten)
 
-			spinner.update(action: 'Joining detection sets')
-			spinner.auto_spin
-
 			detections = Set.new([other_detections, self_detections]).flatten
-
-			spinner.update(action: 'Processing detections')
-			spinner.auto_spin
 
 			detections.each do |detection_entry|
 				in_self = self_detections.include? detection_entry
@@ -101,9 +66,6 @@ module Nessana
 					detection.status = true
 				end
 			end
-
-			spinner.update(action: 'Generating vulnerability list')
-			spinner.auto_spin
 
 			added_plugin_ids = self_plugin_ids - other_plugin_ids
 			deleted_plugin_ids = other_plugin_ids - self_plugin_ids
@@ -130,8 +92,6 @@ module Nessana
 
 				vulnerability
 			end
-
-			spinner.success('done!')
 
 			all_vulnerabilities
 		end
