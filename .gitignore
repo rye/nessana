@@ -9,9 +9,9 @@
 
 # Configuration files
 *.yml
-!.codecov.yml
 !.rubocop.yml
 !.travis.yml
+!codecov.yml
 
 # Built .gem files
 *.gem
