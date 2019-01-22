@@ -13,7 +13,7 @@ Gem::Specification.new do |s|
 A fast Nessus dump parser and differ.
 DESCRIPTION
 	s.authors = ['Kristofer Rye <kristofer.rye@gmail.com>']
-	s.licenses = ['MIT']
+	s.license = 'AGPL-3.0-only'
 	s.homepage = 'https://github.com/rye/nessana'
 	s.files = Dir.glob(['README.md', 'lib/**/*.rb', 'bin/**'])
 	s.executables = 'nessana'
