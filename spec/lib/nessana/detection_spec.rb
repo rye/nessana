@@ -31,4 +31,8 @@ describe Nessana::Detection do
 			end
 		end
 	end
+
+	it 'is properly uniqable' do
+		expect(([Nessana::Detection.new('localhost', 'tcp', 23)] * 2).uniq.count).to eq(1)
+	end
 end
