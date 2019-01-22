@@ -15,21 +15,19 @@ module Nessana
 		def initialize(filename = nil, filters = [])
 			@filename, @filters = filename, filters
 
-			if @filename
-				if File.readable?(@filename)
-					spinner_options = {
-						success_mark: "\u2713".encode('utf-8'),
-						format: :dots_3
-					}
-					spinner = TTY::Spinner.new("[:spinner] Loading #{@filename}...", **spinner_options)
-					spinner.auto_spin
+			if File.readable?(@filename)
+				spinner_options = {
+					success_mark: "\u2713".encode('utf-8'),
+					format: :dots_3
+				}
+				spinner = TTY::Spinner.new("[:spinner] Loading #{@filename}...", **spinner_options)
+				spinner.auto_spin
 
-					read_csv!
+				read_csv!
 
-					spinner.success('done!')
-				else
-					throw 'file not readable; sad face'
-				end
+				spinner.success('done!')
+			else
+				throw "Cannot read from #{@filename.inspect}, not readable"
 			end
 		end
 
