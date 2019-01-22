@@ -18,7 +18,7 @@ module Nessana
 			self.new(data, filters)
 		end
 
-		def initialize(vulnerabilities = [], filters = [])
+		def initialize(vulnerabilities = {}, filters = [])
 			@filters = filters
 
 			filtered_data = vulnerabilities.select do |_, vulnerability|
