@@ -2,10 +2,7 @@ require 'simplecov'
 SimpleCov.start
 
 require 'codecov'
-SimpleCov.formatter = SimpleCov::Formatter::MultiFormatter.new([
-	SimpleCov::Formatter::Codecov,
-	Coveralls::SimpleCov::Formatter,
-])
+SimpleCov.formatter = SimpleCov::Formatter::Codecov
 
 require 'rspec'
 require 'rspec/expectations'
