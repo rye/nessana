@@ -96,7 +96,8 @@ module Nessana
 				end
 			end
 
-			spinner.success('done!')
+			spinner.update(action: 'Generating vulnerability list')
+			spinner.auto_spin
 
 			added_plugin_ids = self_plugin_ids - other_plugin_ids
 			deleted_plugin_ids = other_plugin_ids - self_plugin_ids
@@ -123,6 +124,8 @@ module Nessana
 
 				vulnerability
 			end
+
+			spinner.success('done!')
 
 			all_vulnerabilities
 		end
