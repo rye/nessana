@@ -27,8 +27,8 @@ module Nessana
 				Filter.new(filter_hash)
 			end
 
-			old_dump = @configuration['old_filename'] ? Dump.new(@configuration['old_filename'], filters) : Dump.new
-			new_dump = Dump.new(@configuration['new_filename'], filters)
+			old_dump = @configuration['old_filename'] ? Dump.read(@configuration['old_filename'], filters) : Dump.new
+			new_dump = Dump.read(@configuration['new_filename'], filters)
 
 			diff = new_dump - old_dump
 

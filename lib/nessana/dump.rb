@@ -10,25 +10,33 @@ require 'nessana/vulnerability'
 module Nessana
 	class Dump < Hash
 		attr_reader :filters
-		attr_reader :filename
 
-		def initialize(filename = nil, filters = [])
-			@filename, @filters = filename, filters
+		def self.read(file, filters = [])
+			throw "Cannot read from #{file.inspect}, not readable" unless File.readable?(file)
 
-			if File.readable?(@filename)
-				spinner_options = {
-					success_mark: "\u2713".encode('utf-8'),
-					format: :dots_3
-				}
-				spinner = TTY::Spinner.new("[:spinner] Loading #{@filename}...", **spinner_options)
-				spinner.auto_spin
+			spinner_options = {
+				success_mark: "\u2713".encode('utf-8'),
+				format: :dots_3
+			}
 
-				read_csv!
+			spinner = TTY::Spinner.new("[:spinner] Loading #{file}...", **spinner_options)
+			spinner.auto_spin
 
-				spinner.success('done!')
-			else
-				throw "Cannot read from #{@filename.inspect}, not readable"
+			data = read_csv(file)
+
+			spinner.success('done!')
+
+			self.new(data, filters)
+		end
+
+		def initialize(vulnerabilities = [], filters = [])
+			@filters = filters
+
+			filtered_data = vulnerabilities.select do |_, vulnerability|
+				!vulnerability.matches?(@filters)
 			end
+
+			merge!(filtered_data)
 		end
 
 		def -(other)
@@ -128,19 +136,9 @@ module Nessana
 			all_vulnerabilities
 		end
 
-		def read_csv!
-			data = read_csv(filename)
-
-			filtered_data = data.select do |_, vulnerability|
-				!vulnerability.matches?(@filters)
-			end
-
-			merge!(filtered_data)
-		end
-
 		protected
 
-		def read_csv(filename)
+		def self.read_csv(filename)
 			dump_data = {}
 
 			first_row = true
