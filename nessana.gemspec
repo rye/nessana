@@ -18,13 +18,11 @@ DESCRIPTION
 	s.files = Dir.glob(['README.md', 'lib/**/*.rb', 'bin/**'])
 	s.executables = 'nessana'
 
-	s.add_dependency 'asana', '~> 0.6.3'
 	s.add_dependency 'fastcsv', '~> 0.0.6'
 	s.add_dependency 'mime-types', '~> 3.1'
 	s.add_dependency 'tty-spinner', '~> 0.8.0'
 
 	s.add_development_dependency 'codecov', '~> 0.1.14'
-	s.add_development_dependency 'coveralls', '~> 0.8.22'
 	s.add_development_dependency 'guard', '~> 2.14'
 	s.add_development_dependency 'guard-rspec', '~> 4.7'
 	s.add_development_dependency 'pry', '~> 0.11.3'
