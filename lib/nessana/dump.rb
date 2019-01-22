@@ -32,21 +32,8 @@ module Nessana
 			other_plugin_ids = other.keys
 			self_plugin_ids = keys
 
-			other_detection_pairs = other.map do |plugin_id, vulnerability|
-				vulnerability.detections.map do |detection|
-					{ plugin_id => detection }
-				end
-			end
-
-			other_detections = Set.new(other_detection_pairs.flatten)
-
-			detection_pairs = map do |plugin_id, vulnerability|
-				vulnerability.detections.map do |detection|
-					{ plugin_id => detection }
-				end
-			end
-
-			self_detections = Set.new(detection_pairs.flatten)
+			other_detections = other.detection_pairs
+			self_detections = detection_pairs
 
 			detections = Set.new([other_detections, self_detections]).flatten
 
@@ -94,6 +81,16 @@ module Nessana
 			end
 
 			all_vulnerabilities
+		end
+
+		def detection_pairs
+			pairs = map do |plugin_id, vulnerability|
+				vulnerability.detections.map do |detection|
+					{ plugin_id => detection }
+				end
+			end
+
+			Set.new(pairs.flatten)
 		end
 
 		protected
