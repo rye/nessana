@@ -23,3 +23,13 @@ RSpec::Matchers.define :be_requirable do
 		return true
 	end
 end
+
+RSpec.configure do |rspec|
+	rspec.around(:example) do |example|
+		begin
+			example.run
+		rescue SystemExit => e
+			fail "Got SystemExit: #{e.status}."
+		end
+	end
+end
