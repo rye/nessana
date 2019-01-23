@@ -156,4 +156,8 @@ end
 
 puts "Imported: #{Plugin.count} plugins, #{Host.count} hosts, and #{Detection.count} detections."
 
+size = ActiveRecord::Base.connection.execute('SELECT page_count * page_size AS size FROM pragma_page_count(), pragma_page_size();').first['size'].to_i
+
+puts "Database has size #{size} bytes (#{(size.to_r / (1024 ** 2)).to_f} MiB)"
+
 binding.pry
