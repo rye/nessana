@@ -15,6 +15,8 @@ module Nessana
 		def self.execute!(argv = ARGV)
 			parse!(*argv)
 
+			return @configuration['__exit-code__'] if @configuration['__stop__']
+
 			unless @configuration['old_filename']
 				warn 'No old dump filename given; assuming you want this.'
 			end
