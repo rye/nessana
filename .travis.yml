@@ -9,5 +9,6 @@ before_install:
   - gem install bundler --version 2.0.1
 
 script:
+  - cat config.yml.sample | tee config.yml
   - bundle exec rspec
 #  - bundle exec rubocop

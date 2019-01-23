@@ -1,10 +1,6 @@
----
-asana:
-  token: "[ASANA API TOKEN GOES HERE]"
+# filters:
+# - risk: 'None'
 
-filters:
-- risk: 'None'
+# dry_run: true
 
-dry_run: true
-
-verbosity: 'debug'
+# verbosity: 'debug'
