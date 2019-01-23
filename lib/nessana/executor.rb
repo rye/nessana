@@ -15,6 +15,8 @@ module Nessana
 		def self.execute!(argv = ARGV)
 			parse!(*argv)
 
+			return @configuration unless @configuration.is_a?(Nessana::Executor::ExecutionConfiguration)
+
 			return @configuration['__exit-code__'] if @configuration['__stop__']
 
 			unless @configuration['old_filename']
