@@ -1,5 +1,6 @@
 require 'optparse'
 require 'pp'
+require 'tty-spinner'
 
 require 'nessana/executor/execution_configuration'
 require 'nessana/filter'
@@ -14,23 +15,54 @@ module Nessana
 		def self.execute!(argv = ARGV)
 			parse!(*argv)
 
+			return @configuration unless @configuration.is_a?(Nessana::Executor::ExecutionConfiguration)
+
+			return @configuration['__exit-code__'] if @configuration['__stop__']
+
 			unless @configuration['old_filename']
-				$stderr.puts 'No old dump filename given; will assume no prior knowledge.'
+				warn 'No old dump filename given; assuming you want this.'
 			end
 
 			unless @configuration['new_filename']
-				puts 'No new dump filename given; cannot do anything.'
-				return
+				warn 'No new dump filename given; cannot do anything.'
+				return 1
 			end
 
 			filters = @configuration['filters'].map do |filter_hash|
 				Filter.new(filter_hash)
 			end
 
-			old_dump = @configuration['old_filename'] ? Dump.new(@configuration['old_filename'], filters) : Dump.new
-			new_dump = Dump.new(@configuration['new_filename'], filters)
+			spinner_options = {
+				success_mark: "\u2713".encode('utf-8'),
+				format: :dots_3
+			}
+
+			old_dump = nil
+
+			if @configuration['old_filename']
+				spinner = TTY::Spinner.new("[:spinner] Loading #{@configuration['old_filename']}...", **spinner_options)
+				spinner.auto_spin
+
+				old_dump = Dump.read(@configuration['old_filename'], filters)
+
+				spinner.success('done!')
+			else
+				old_dump = Dump.new
+			end
+
+			spinner = TTY::Spinner.new("[:spinner] Loading #{@configuration['old_filename']}...", **spinner_options)
+			spinner.auto_spin
+
+			new_dump = Dump.read(@configuration['new_filename'], filters)
+
+			spinner.success('done!')
+
+			spinner = TTY::Spinner.new('[:spinner] Comparing dumps...', **spinner_options)
+			spinner.auto_spin
 
 			diff = new_dump - old_dump
+
+			spinner.success('done!')
 
 			diff.sort do |vulnerability_a, vulnerability_b|
 				vulnerability_a.plugin_id.to_i <=> vulnerability_b.plugin_id.to_i
@@ -47,6 +79,8 @@ DISCOVERIES"
 				end
 				puts "\n" * 2
 			end
+
+			0
 		end
 
 		def self.parse(*argv)
@@ -57,10 +91,8 @@ DISCOVERIES"
 
 				if argv.count == 0
 					puts parser
-					exit 1
+					return 1
 				end
-
-				parser.parse(*argv)
 			end
 
 			remaining_arguments = option_parser.order!(argv)
@@ -84,6 +116,5 @@ DISCOVERIES"
 		def self.parse!(*argv)
 			@configuration = parse(*argv)
 		end
-
 	end
 end

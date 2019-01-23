@@ -19,36 +19,49 @@ describe Nessana do
 
 		describe :'.execute!' do
 			before do
-				allow(subject).to receive(:exit)
+				allow(subject).to receive(:warn)
 				allow(STDOUT).to receive(:write)
-				allow(STDERR).to receive(:write)
 			end
 
 			context 'taking no command-line arguments' do
 				let(:arguments) { [] }
 
 				it 'produces usage message' do
-					expect { subject.send(:execute!, arguments) }.to(output(/Usage:/).to_stdout)
+					expect do
+						subject.send(:execute!, arguments)
+					end.to(output(/Usage:/).to_stdout)
 				end
 
-				it 'exits with status 1' do
-					expect(subject).to receive(:exit).with(1)
-
-					subject.send(:execute!, arguments)
+				it 'returns 1' do
+					expect(subject.send(:execute!, arguments)).to eq(1)
 				end
 			end
 
-			context '--help' do
-				let(:arguments) { ['--help'] }
+			[['--help'], ['-h']].each do |argv|
+				context "taking #{argv.join(' ')}" do
+					it 'produces usage message' do
+						expect do
+							subject.send(:execute!, argv)
+						end.to(output(/Usage:/).to_stdout)
+					end
 
-				it 'produces usage message' do
-					expect { subject.send(:execute!, arguments) }.to(output(/Usage:/).to_stdout)
+					it 'returns 0' do
+						expect(subject.send(:execute!, argv)).to eq(0)
+					end
 				end
+			end
 
-				it 'exits with status 0' do
-					expect(subject).to receive(:exit).with(0)
+			[['--version'], ['-V']].each do |argv|
+				context "taking #{argv.join(' ')}" do
+					it 'prints the version of Nessana' do
+						expect do
+							subject.send(:execute!, argv)
+						end.to(output(Regexp.new(Nessana::VERSION)).to_stdout)
+					end
 
-					subject.send(:execute!, arguments)
+					it 'returns 0' do
+						expect(subject.send(:execute!, argv)).to eq(0)
+					end
 				end
 			end
 		end

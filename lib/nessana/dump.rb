@@ -2,7 +2,6 @@ require 'time'
 
 require 'csv'
 require 'fastcsv'
-require 'tty-spinner'
 
 require 'nessana/detection'
 require 'nessana/vulnerability'
@@ -10,74 +9,31 @@ require 'nessana/vulnerability'
 module Nessana
 	class Dump < Hash
 		attr_reader :filters
-		attr_reader :filename
 
-		def initialize(filename = nil, filters = [])
-			@filename, @filters = filename, filters
+		def self.read(file, filters = [])
+			data = read_csv(file)
 
-			if @filename
-				if File.readable?(@filename)
-					spinner_options = {
-						success_mark: "\u2713".encode('utf-8'),
-						format: :dots_3
-					}
-					spinner = TTY::Spinner.new("[:spinner] Loading #{@filename}...", **spinner_options)
-					spinner.auto_spin
+			self.new(data, filters)
+		end
 
-					read_csv!
+		def initialize(vulnerabilities = {}, filters = [])
+			@filters = filters
 
-					spinner.success('done!')
-				else
-					throw 'file not readable; sad face'
-				end
+			filtered_data = vulnerabilities.select do |_, vulnerability|
+				!vulnerability.matches?(@filters)
 			end
+
+			merge!(filtered_data)
 		end
 
 		def -(other)
-			spinner_options = {
-				success_mark: "\u2713".encode('utf-8'),
-				format: :dots_3
-			}
-
-			spinner = TTY::Spinner.new('[:spinner] :action...', **spinner_options)
-			spinner.update(action: 'Generating detections...')
-
 			other_plugin_ids = other.keys
 			self_plugin_ids = keys
 
-			spinner.update(action: 'Finding L detections')
-
-			other_detection_pairs = other.map do |plugin_id, vulnerability|
-				spinner.update(action: "Finding L detections (#{plugin_id})")
-				spinner.auto_spin
-
-				vulnerability.detections.map do |detection|
-					{ plugin_id => detection }
-				end
-			end
-
-			other_detections = Set.new(other_detection_pairs.flatten)
-
-			spinner.update(action: 'Finding R detections')
-
-			detection_pairs = map do |plugin_id, vulnerability|
-				spinner.update(action: "Finding R detections (#{plugin_id})")
-				spinner.auto_spin
-
-				vulnerability.detections.map do |detection|
-					{ plugin_id => detection }
-				end
-			end
-
-			self_detections = Set.new(detection_pairs.flatten)
-
-			spinner.update(action: 'Joining detection sets')
-			spinner.auto_spin
+			other_detections = other.detection_pairs
+			self_detections = detection_pairs
 
 			detections = Set.new([other_detections, self_detections]).flatten
-
-			spinner.update(action: 'Processing detections')
-			spinner.auto_spin
 
 			detections.each do |detection_entry|
 				in_self = self_detections.include? detection_entry
@@ -95,8 +51,6 @@ module Nessana
 					detection.status = true
 				end
 			end
-
-			spinner.success('done!')
 
 			added_plugin_ids = self_plugin_ids - other_plugin_ids
 			deleted_plugin_ids = other_plugin_ids - self_plugin_ids
@@ -127,19 +81,19 @@ module Nessana
 			all_vulnerabilities
 		end
 
-		def read_csv!
-			data = read_csv(filename)
-
-			filtered_data = data.select do |_, vulnerability|
-				!vulnerability.matches?(@filters)
+		def detection_pairs
+			pairs = map do |plugin_id, vulnerability|
+				vulnerability.detections.map do |detection|
+					{ plugin_id => detection }
+				end
 			end
 
-			merge!(filtered_data)
+			Set.new(pairs.flatten)
 		end
 
 		protected
 
-		def read_csv(filename)
+		def self.read_csv(filename)
 			dump_data = {}
 
 			first_row = true

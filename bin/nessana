@@ -2,4 +2,4 @@
 
 require 'nessana/executor'
 
-Nessana::Executor.execute!
+exit Nessana::Executor.execute!

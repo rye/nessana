@@ -3,6 +3,8 @@ require 'mime-types'
 require 'nessana/version'
 
 module Nessana::Executor
+	# TODO: Replace __stop__ and __exit-code__ with exits again, and
+	# use a rescue SystemExit => e instead.
 	class ExecutionConfiguration < ::Hash
 		def initialize
 			self['verbosity'] = 'info'
@@ -25,14 +27,10 @@ module Nessana::Executor
 			add_usage_option(parser)
 			add_verbosity_option(parser)
 
-			parser.on_tail('-h', '--help', 'Show this message') do
-				puts parser
-				exit
-			end
-
-			parser.on_tail('--version', 'Show version') do
+			parser.on_tail('-V', '--version', 'Show version') do
 				puts Nessana::VERSION
-				exit
+				self['__stop__'] = true
+				self['__exit-code__'] = 0
 			end
 		end
 
@@ -52,7 +50,8 @@ module Nessana::Executor
 		def add_usage_option(parser)
 			parser.on('-h', '--help', 'Print usage summary.') do
 				puts parser
-				exit 0
+				self['__stop__'] = true
+				self['__exit-code__'] = 0
 			end
 		end
 
