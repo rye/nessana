@@ -13,22 +13,22 @@ module Nessana
 		end
 
 		def self.execute!(argv = ARGV)
-			parse!(*argv)
+			configuration = parse(*argv)
 
-			return @configuration unless @configuration.is_a?(Nessana::Executor::ExecutionConfiguration)
+			return configuration unless configuration.is_a?(Nessana::Executor::ExecutionConfiguration)
 
-			return @configuration['__exit-code__'] if @configuration['__stop__']
+			return configuration['__exit-code__'] if configuration['__stop__']
 
-			unless @configuration['old_filename']
+			unless configuration['old_filename']
 				warn 'No old dump filename given; assuming you want this.'
 			end
 
-			unless @configuration['new_filename']
+			unless configuration['new_filename']
 				warn 'No new dump filename given; cannot do anything.'
 				return 1
 			end
 
-			filters = @configuration['filters'].map do |filter_hash|
+			filters = configuration['filters'].map do |filter_hash|
 				Filter.new(filter_hash)
 			end
 
@@ -39,21 +39,21 @@ module Nessana
 
 			old_dump = nil
 
-			if @configuration['old_filename']
-				spinner = TTY::Spinner.new("[:spinner] Loading #{@configuration['old_filename']}...", **spinner_options)
+			if configuration['old_filename']
+				spinner = TTY::Spinner.new("[:spinner] Loading #{configuration['old_filename']}...", **spinner_options)
 				spinner.auto_spin
 
-				old_dump = Dump.read(@configuration['old_filename'], filters)
+				old_dump = Dump.read(configuration['old_filename'], filters)
 
 				spinner.success('done!')
 			else
 				old_dump = Dump.new
 			end
 
-			spinner = TTY::Spinner.new("[:spinner] Loading #{@configuration['new_filename']}...", **spinner_options)
+			spinner = TTY::Spinner.new("[:spinner] Loading #{configuration['new_filename']}...", **spinner_options)
 			spinner.auto_spin
 
-			new_dump = Dump.read(@configuration['new_filename'], filters)
+			new_dump = Dump.read(configuration['new_filename'], filters)
 
 			spinner.success('done!')
 
@@ -109,12 +109,6 @@ DISCOVERIES"
 			configuration.read_configuration_file!
 
 			configuration
-		end
-
-		protected
-
-		def self.parse!(*argv)
-			@configuration = parse(*argv)
 		end
 	end
 end
