@@ -50,6 +50,20 @@ describe Nessana do
 					end
 				end
 			end
+
+			[['--version'], ['-V']].each do |argv|
+				context "taking #{argv.join(' ')}" do
+					it 'prints the version of Nessana' do
+						expect do
+							subject.send(:execute!, argv)
+						end.to(output(Regexp.new(Nessana::VERSION)).to_stdout)
+					end
+
+					it 'returns 0' do
+						expect(subject.send(:execute!, argv)).to eq(0)
+					end
+				end
+			end
 		end
 	end
 end

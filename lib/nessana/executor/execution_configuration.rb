@@ -27,7 +27,7 @@ module Nessana::Executor
 			add_usage_option(parser)
 			add_verbosity_option(parser)
 
-			parser.on_tail('--version', 'Show version') do
+			parser.on_tail('-V', '--version', 'Show version') do
 				puts Nessana::VERSION
 				self['__stop__'] = true
 				self['__exit-code__'] = 0
