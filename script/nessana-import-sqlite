@@ -20,6 +20,7 @@ ActiveRecord::Base.establish_connection(adapter: 'sqlite3', database: ':memory:'
 # Define a minimal database schema
 ActiveRecord::Schema.define do
 	create_table :scans, force: true do |t|
+		t.string :filename
 	end
 
 	create_table :detections, force: true do |t|
@@ -73,93 +74,120 @@ class Host < ActiveRecord::Base
 	has_many :scans, -> { distinct }, through: :detections
 end
 
-dump_filename = ARGV.shift
-
-unless dump_filename
-	warn "Filename not given; not doing anything."
-	exit 1
-end
-
-scan = Scan.create
-plugins = {}
-hosts = []
-detections = []
-
-File.open(dump_filename, 'rb') do |io|
-	io.advise(:willneed)
-	io.advise(:noreuse)
-	io.advise(:sequential)
-
-	first = true
-
-	FastCSV.raw_parse(io) do |row|
-		if first
-			first = false
-			next
+module Importer
+	def self.import(filename)
+		unless filename
+			warn "Filename not given; not doing anything."
+			exit 1
 		end
 
-		raise "Unexpected row length: #{row.count}" unless row.count == 13
+		scan = Scan.create(filename: File.expand_path(filename))
 
-		id = row[0].to_i
-		cve = row[1]
-		cvss = row[2]
-		risk = row[3]
-		host = row[4]
-		protocol = row[5]
-		port = row[6].to_i
-		name = row[7]
-		synopsis = row[8]
-		description = row[9]
-		solution = row[10]
-		see_also = row[11]
-		plugin_output = row[12]
+		plugins = {}
+		hosts = {}
+		detections = []
 
-		if existing = plugins[id]
-			if existing[:cve] != cve
-				plugins[id][:cve] = "#{plugins[id][:cve]}, #{cve}"
+		File.open(filename, 'rb') do |io|
+			io.advise(:willneed)
+			io.advise(:noreuse)
+			io.advise(:sequential)
+
+			first = true
+
+			FastCSV.raw_parse(io) do |row|
+				if first
+					first = false
+					next
+				end
+
+				raise "Unexpected row length: #{row.count}" unless row.count == 13
+
+				id = row[0].to_i
+				cve = row[1]
+				cvss = row[2]
+				risk = row[3]
+				host = row[4]
+				protocol = row[5]
+				port = row[6].to_i
+				name = row[7]
+				synopsis = row[8]
+				description = row[9]
+				solution = row[10]
+				see_also = row[11]
+				plugin_output = row[12]
+
+				if existing = plugins[id]
+					if existing[:cve] != cve
+						plugins[id][:cve] = "#{plugins[id][:cve]}, #{cve}"
+					end
+
+					raise "Different ID (wat)" if existing[:id] != id
+					raise "Different CVSS" if existing[:cvss] != cvss
+					raise "Different Risk" if existing[:risk] != risk
+					raise "Different Name" if existing[:name] != name
+					raise "Different Synopsis" if existing[:synopsis] != synopsis
+					raise "Different Description" if existing[:description] != description
+					raise "Different Solution" if existing[:solution] != solution
+					raise "Different See Also" if existing[:see_also] != see_also
+				elsif existing = Plugin.find_by(id: id)
+					unless existing.cve.match?(cve)
+						existing.cve = "#{existing.cve}, #{cve}"
+						existing.save!
+					end
+
+					raise "Different ID (wat)" if existing.id != id
+					raise "Different CVSS" if existing.cvss != cvss
+					raise "Different Risk" if existing.risk != risk
+					raise "Different Name" if existing.name != name
+					raise "Different Synopsis" if existing.synopsis != synopsis
+					raise "Different Description" if existing.description != description
+					raise "Different Solution" if existing.solution != solution
+					raise "Different See Also" if existing.see_also != see_also
+				else
+					plugins[id] = { id: id, cve: cve, cvss: cvss, risk: risk, name: name, synopsis: synopsis, description: description, solution: solution, see_also: see_also }
+				end
+
+				unless hosts[host] || Host.find_by(hostname: host)
+					hosts[host] = { hostname: host }
+				end
+
+				detections << { scan_id: scan.id, plugin_id: id, hostname: host, port: port, protocol: protocol, plugin_output: plugin_output }
 			end
 
-			raise "Different ID (wat)" if existing[:id] != id
-			raise "Different CVSS" if existing[:cvss] != cvss
-			raise "Different Risk" if existing[:risk] != risk
-			raise "Different Name" if existing[:name] != name
-			raise "Different Synopsis" if existing[:synopsis] != synopsis
-			raise "Different Description" if existing[:description] != description
-			raise "Different Solution" if existing[:solution] != solution
-			raise "Different See Also" if existing[:see_also] != see_also
-		else
-			plugins[id] = { id: id, cve: cve, cvss: cvss, risk: risk, name: name, synopsis: synopsis, description: description, solution: solution, see_also: see_also }
-		end
+			Plugin.bulk_insert(:id, :cve, :cvss, :risk, :name, :synopsis, :description, :solution, :see_also) do |worker|
+				plugins.each do |plugin_id, plugin|
+					worker.add(plugin)
+				end
+			end
 
-		hosts << { hostname: host }
+			Host.bulk_insert do |worker|
+				hosts.each.each do |hostname, host|
+					worker.add(host)
+				end
+			end
 
-		detections << { scan_id: scan.id, plugin_id: id, hostname: host, port: port, protocol: protocol, plugin_output: plugin_output }
-	end
+			hosts = Host.all.map { |host| [host.hostname, host] }.to_h
 
-	Plugin.bulk_insert(:id, :cve, :cvss, :risk, :name, :synopsis, :description, :solution, :see_also) do |worker|
-		plugins.each do |plugin_id, plugin|
-			worker.add(plugin)
-		end
-	end
-
-	Host.bulk_insert do |worker|
-		hosts.uniq.each do |host|
-			worker.add(host)
-		end
-	end
-
-	hosts = Host.all.map { |host| [host.hostname, host] }.to_h
-
-	Detection.bulk_insert(:scan_id, :plugin_id, :host_id, :port, :protocol, :plugin_output) do |worker|
-		detections.each do |detection|
-			detection = detection.clone
-			detection[:host_id] = hosts[detection[:hostname]].id
-			worker.add(detection)
+			Detection.bulk_insert(:scan_id, :plugin_id, :host_id, :port, :protocol, :plugin_output) do |worker|
+				detections.each do |detection|
+					detection = detection.clone
+					detection[:host_id] = hosts[detection[:hostname]].id
+					worker.add(detection)
+				end
+			end
 		end
 	end
 end
 
+Importer.import(ARGV.shift)
+
 puts "Imported: #{Plugin.count} plugins, #{Host.count} hosts, and #{Detection.count} detections."
+
+if another = ARGV.shift
+	Importer.import(another)
+
+	puts "Imported: #{Plugin.count} plugins, #{Host.count} hosts, and #{Detection.count} detections also."
+end
 
 size = ActiveRecord::Base.connection.execute('SELECT page_count * page_size AS size FROM pragma_page_count(), pragma_page_size();').first['size'].to_i
 
