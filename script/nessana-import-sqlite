@@ -52,6 +52,8 @@ end
 # Define the models
 class Scan < ActiveRecord::Base
 	has_many :detections
+	has_many :plugins, -> { distinct }, through: :detections
+	has_many :hosts, -> { distinct }, through: :detections
 end
 
 class Detection < ActiveRecord::Base
@@ -62,10 +64,13 @@ end
 
 class Plugin < ActiveRecord::Base
 	has_many :detections
+	has_many :scans, -> { distinct }, through: :detections
+	has_many :hosts, -> { distinct }, through: :detections
 end
 
 class Host < ActiveRecord::Base
 	has_many :detections
+	has_many :scans, -> { distinct }, through: :detections
 end
 
 dump_filename = ARGV.shift
