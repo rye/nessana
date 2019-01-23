@@ -1,5 +1,8 @@
 #!/usr/bin/env ruby
 
+# TODO Map to IP and DNS name
+# TODO Persistence (migrations)
+
 require 'active_record'
 require 'bulk_insert'
 require 'fastcsv'
