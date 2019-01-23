@@ -23,9 +23,9 @@ ActiveRecord::Schema.define do
 		t.belongs_to(:plugin, index: true)
 		t.belongs_to(:scan, index: true)
 		t.belongs_to(:host, index: true)
-		t.belongs_to(:port, index: true)
-		t.belongs_to(:protocol, index: true)
 		t.binary :plugin_output
+		t.integer :port
+		t.string :protocol
 	end
 
 	create_table :plugins, force: true do |t|
@@ -44,14 +44,6 @@ ActiveRecord::Schema.define do
 		t.string :ip
 		t.string :dns
 	end
-
-	create_table :ports, force: true do |t|
-		t.integer :number
-	end
-
-	create_table :protocols, force: true do |t|
-		t.string :name
-	end
 end
 
 # Define the models
@@ -63,8 +55,6 @@ class Detection < ActiveRecord::Base
 	belongs_to :scan, required: true
 	belongs_to :plugin, required: true
 	belongs_to :host, required: true
-	belongs_to :port, required: true
-	belongs_to :protocol, required: true
 end
 
 class Plugin < ActiveRecord::Base
@@ -72,14 +62,6 @@ class Plugin < ActiveRecord::Base
 end
 
 class Host < ActiveRecord::Base
-	has_many :detections
-end
-
-class Port < ActiveRecord::Base
-	has_many :detections
-end
-
-class Protocol < ActiveRecord::Base
 	has_many :detections
 end
 
@@ -93,8 +75,6 @@ end
 scan = Scan.create
 plugins = {}
 hosts = []
-ports = []
-protocols = []
 detections = []
 
 File.open(dump_filename, 'rb') do |io|
@@ -144,22 +124,8 @@ File.open(dump_filename, 'rb') do |io|
 		end
 
 		hosts << { hostname: host }
-		ports << { number: port }
-		protocols << { name: protocol }
 
-		detections << { scan_id: scan.id, plugin_id: id, hostname: host, port: row[6].to_i, protocol: protocol, plugin_output: plugin_output }
-	end
-
-	Protocol.bulk_insert do |worker|
-		protocols.uniq.each do |protocol|
-			worker.add(protocol)
-		end
-	end
-
-	Port.bulk_insert do |worker|
-		ports.uniq.each do |port|
-			worker.add(port)
-		end
+		detections << { scan_id: scan.id, plugin_id: id, hostname: host, port: port, protocol: protocol, plugin_output: plugin_output }
 	end
 
 	Plugin.bulk_insert(:id, :cve, :cvss, :risk, :name, :synopsis, :description, :solution, :see_also) do |worker|
@@ -175,20 +141,16 @@ File.open(dump_filename, 'rb') do |io|
 	end
 
 	hosts = Host.all.map { |host| [host.hostname, host] }.to_h
-	ports = Port.all.map { |port| [port.number, port] }.to_h
-	protocols = Protocol.all.map { |protocol| [protocol.name, protocol] }.to_h
 
-	Detection.bulk_insert(:scan_id, :plugin_id, :host_id, :port_id, :protocol_id, :plugin_output) do |worker|
+	Detection.bulk_insert(:scan_id, :plugin_id, :host_id, :port, :protocol, :plugin_output) do |worker|
 		detections.each do |detection|
 			detection = detection.clone
 			detection[:host_id] = hosts[detection[:hostname]].id
-			detection[:port_id] = ports[detection[:port]].id
-			detection[:protocol_id] = protocols[detection[:protocol]].id
 			worker.add(detection)
 		end
 	end
 end
 
-puts "Imported: #{Plugin.count} plugins, #{Host.count} hosts, #{Port.count} ports, #{Protocol.count} protocols, and #{Detection.count} detections."
+puts "Imported: #{Plugin.count} plugins, #{Host.count} hosts, and #{Detection.count} detections."
 
 binding.pry
