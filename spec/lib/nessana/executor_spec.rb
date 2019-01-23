@@ -20,8 +20,8 @@ describe Nessana do
 		describe :'.execute!' do
 			before do
 				allow(subject).to receive(:exit)
+				allow(subject).to receive(:warn)
 				allow(STDOUT).to receive(:write)
-				allow(STDERR).to receive(:write)
 			end
 
 			context 'taking no command-line arguments' do
