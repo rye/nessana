@@ -21,7 +21,7 @@ module Nessana
 
 			unless @configuration['new_filename']
 				puts 'No new dump filename given; cannot do anything.'
-				return
+				return 1
 			end
 
 			filters = @configuration['filters'].map do |filter_hash|
@@ -75,6 +75,8 @@ DISCOVERIES"
 				end
 				puts "\n" * 2
 			end
+
+			0
 		end
 
 		def self.parse(*argv)
@@ -85,7 +87,7 @@ DISCOVERIES"
 
 				if argv.count == 0
 					puts parser
-					exit 1
+					return 1
 				end
 
 				parser.parse(*argv)
@@ -112,6 +114,5 @@ DISCOVERIES"
 		def self.parse!(*argv)
 			@configuration = parse(*argv)
 		end
-
 	end
 end

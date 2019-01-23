@@ -25,14 +25,8 @@ module Nessana::Executor
 			add_usage_option(parser)
 			add_verbosity_option(parser)
 
-			parser.on_tail('-h', '--help', 'Show this message') do
-				puts parser
-				exit
-			end
-
 			parser.on_tail('--version', 'Show version') do
 				puts Nessana::VERSION
-				exit
 			end
 		end
 
@@ -52,7 +46,6 @@ module Nessana::Executor
 		def add_usage_option(parser)
 			parser.on('-h', '--help', 'Print usage summary.') do
 				puts parser
-				exit 0
 			end
 		end
 
