@@ -50,7 +50,7 @@ module Nessana
 				old_dump = Dump.new
 			end
 
-			spinner = TTY::Spinner.new("[:spinner] Loading #{@configuration['old_filename']}...", **spinner_options)
+			spinner = TTY::Spinner.new("[:spinner] Loading #{@configuration['new_filename']}...", **spinner_options)
 			spinner.auto_spin
 
 			new_dump = Dump.read(@configuration['new_filename'], filters)
