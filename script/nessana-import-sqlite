@@ -1,0 +1,194 @@
+#!/usr/bin/env ruby
+
+require 'active_record'
+require 'bulk_insert'
+require 'fastcsv'
+require 'sqlite3'
+
+# Use `binding.pry` anywhere in this script for easy debugging
+require 'pp'
+require 'pry'
+
+# Connect to an in-memory sqlite3 database
+ActiveRecord::Base.establish_connection(adapter: 'sqlite3', database: ':memory:')
+# ActiveRecord::Base.logger = Logger.new(STDOUT)
+# ActiveRecord::Base.logger.level = :debug
+
+# Define a minimal database schema
+ActiveRecord::Schema.define do
+	create_table :scans, force: true do |t|
+	end
+
+	create_table :detections, force: true do |t|
+		t.belongs_to(:plugin, index: true)
+		t.belongs_to(:scan, index: true)
+		t.belongs_to(:host, index: true)
+		t.belongs_to(:port, index: true)
+		t.belongs_to(:protocol, index: true)
+		t.binary :plugin_output
+	end
+
+	create_table :plugins, force: true do |t|
+		t.string :cve
+		t.string :cvss
+		t.string :risk
+		t.string :name
+		t.text :synopsis
+		t.text :description
+		t.text :solution
+		t.text :see_also
+	end
+
+	create_table :hosts, force: true do |t|
+		t.string :hostname
+		t.string :ip
+		t.string :dns
+	end
+
+	create_table :ports, force: true do |t|
+		t.integer :number
+	end
+
+	create_table :protocols, force: true do |t|
+		t.string :name
+	end
+end
+
+# Define the models
+class Scan < ActiveRecord::Base
+	has_many :detections
+end
+
+class Detection < ActiveRecord::Base
+	belongs_to :scan, required: true
+	belongs_to :plugin, required: true
+	belongs_to :host, required: true
+	belongs_to :port, required: true
+	belongs_to :protocol, required: true
+end
+
+class Plugin < ActiveRecord::Base
+	has_many :detections
+end
+
+class Host < ActiveRecord::Base
+	has_many :detections
+end
+
+class Port < ActiveRecord::Base
+	has_many :detections
+end
+
+class Protocol < ActiveRecord::Base
+	has_many :detections
+end
+
+dump_filename = ARGV.shift
+
+unless dump_filename
+	warn "Filename not given; not doing anything."
+	exit 1
+end
+
+scan = Scan.create
+plugins = {}
+hosts = []
+ports = []
+protocols = []
+detections = []
+
+File.open(dump_filename, 'rb') do |io|
+	io.advise(:willneed)
+	io.advise(:noreuse)
+	io.advise(:sequential)
+
+	first = true
+
+	FastCSV.raw_parse(io) do |row|
+		if first
+			first = false
+			next
+		end
+
+		raise "Unexpected row length: #{row.count}" unless row.count == 13
+
+		id = row[0].to_i
+		cve = row[1]
+		cvss = row[2]
+		risk = row[3]
+		host = row[4]
+		protocol = row[5]
+		port = row[6].to_i
+		name = row[7]
+		synopsis = row[8]
+		description = row[9]
+		solution = row[10]
+		see_also = row[11]
+		plugin_output = row[12]
+
+		if existing = plugins[id]
+			if existing[:cve] != cve
+				plugins[id][:cve] = "#{plugins[id][:cve]}, #{cve}"
+			end
+
+			raise "Different ID (wat)" if existing[:id] != id
+			raise "Different CVSS" if existing[:cvss] != cvss
+			raise "Different Risk" if existing[:risk] != risk
+			raise "Different Name" if existing[:name] != name
+			raise "Different Synopsis" if existing[:synopsis] != synopsis
+			raise "Different Description" if existing[:description] != description
+			raise "Different Solution" if existing[:solution] != solution
+			raise "Different See Also" if existing[:see_also] != see_also
+		else
+			plugins[id] = { id: id, cve: cve, cvss: cvss, risk: risk, name: name, synopsis: synopsis, description: description, solution: solution, see_also: see_also }
+		end
+
+		hosts << { hostname: host }
+		ports << { number: port }
+		protocols << { name: protocol }
+
+		detections << { scan_id: scan.id, plugin_id: id, hostname: host, port: row[6].to_i, protocol: protocol, plugin_output: plugin_output }
+	end
+
+	Protocol.bulk_insert do |worker|
+		protocols.uniq.each do |protocol|
+			worker.add(protocol)
+		end
+	end
+
+	Port.bulk_insert do |worker|
+		ports.uniq.each do |port|
+			worker.add(port)
+		end
+	end
+
+	Plugin.bulk_insert(:id, :cve, :cvss, :risk, :name, :synopsis, :description, :solution, :see_also) do |worker|
+		plugins.each do |plugin_id, plugin|
+			worker.add(plugin)
+		end
+	end
+
+	Host.bulk_insert do |worker|
+		hosts.uniq.each do |host|
+			worker.add(host)
+		end
+	end
+
+	hosts = Host.all.map { |host| [host.hostname, host] }.to_h
+	ports = Port.all.map { |port| [port.number, port] }.to_h
+	protocols = Protocol.all.map { |protocol| [protocol.name, protocol] }.to_h
+
+	Detection.bulk_insert(:scan_id, :plugin_id, :host_id, :port_id, :protocol_id, :plugin_output) do |worker|
+		detections.each do |detection|
+			detection = detection.clone
+			detection[:host_id] = hosts[detection[:hostname]].id
+			detection[:port_id] = ports[detection[:port]].id
+			detection[:protocol_id] = protocols[detection[:protocol]].id
+			worker.add(detection)
+		end
+	end
+end
+
+puts "Imported: #{Plugin.count} plugins, #{Host.count} hosts, #{Port.count} ports, #{Protocol.count} protocols, and #{Detection.count} detections."
+
+binding.pry

@@ -22,6 +22,8 @@ DESCRIPTION
 	s.add_dependency 'mime-types', '~> 3.1'
 	s.add_dependency 'tty-spinner', '~> 0.9.0'
 
+	s.add_development_dependency 'activerecord', '~> 5.2.2'
+	s.add_development_dependency 'bulk_insert', '~> 1.7.0'
 	s.add_development_dependency 'codecov', '~> 0.1.14'
 	s.add_development_dependency 'guard', '~> 2.14'
 	s.add_development_dependency 'guard-rspec', '~> 4.7'
@@ -29,6 +31,7 @@ DESCRIPTION
 	s.add_development_dependency 'rspec', '~> 3.7'
 	s.add_development_dependency 'rubocop', '~> 0.57'
 	s.add_development_dependency 'simplecov', '~> 0.16.1'
+	s.add_development_dependency 'sqlite3', '~> 1.3.13'
 
 	s.required_ruby_version = '~> 2.4'
 end
