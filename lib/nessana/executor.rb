@@ -89,8 +89,6 @@ DISCOVERIES"
 					puts parser
 					return 1
 				end
-
-				parser.parse(*argv)
 			end
 
 			remaining_arguments = option_parser.order!(argv)
