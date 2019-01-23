@@ -16,7 +16,7 @@ module Nessana
 			parse!(*argv)
 
 			unless @configuration['old_filename']
-				$stderr.puts 'No old dump filename given; will assume no prior knowledge.'
+				warn 'No old dump filename given; assuming you want this.'
 			end
 
 			unless @configuration['new_filename']
