@@ -11,8 +11,6 @@ module Nessana
 		attr_reader :filters
 
 		def self.read(file, filters = [])
-			throw "Cannot read from #{file.inspect}, not readable" unless File.readable?(file)
-
 			data = read_csv(file)
 
 			self.new(data, filters)
