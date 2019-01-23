@@ -24,7 +24,7 @@ module Nessana
 			end
 
 			unless @configuration['new_filename']
-				puts 'No new dump filename given; cannot do anything.'
+				warn 'No new dump filename given; cannot do anything.'
 				return 1
 			end
 
