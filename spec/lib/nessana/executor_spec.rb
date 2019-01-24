@@ -56,6 +56,20 @@ describe Nessana do
 				end
 			end
 
+			context 'with a configuration with new_filename not present' do
+				it 'warns' do
+					allow(subject).to receive(:parse) do
+						configuration = Nessana::Executor::ExecutionConfiguration.new
+						configuration['new_filename'] = nil
+						configuration
+					end
+
+					expect(subject).to receive(:warn)
+					expect { subject.send(:execute!) }.not_to raise_error
+					expect(subject.send(:execute!)).to eq(1)
+				end
+			end
+
 			context 'taking no command-line arguments' do
 				let(:arguments) { [] }
 
