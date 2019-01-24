@@ -1,6 +1,6 @@
 # nessana
 
-Parse Nessus dumps and intelligently create Asana tasks.
+Parse Nessus dumps and notice differences.
 
 ## Usage
 
