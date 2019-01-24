@@ -30,6 +30,19 @@ describe Nessana do
 				end
 			end
 
+			context 'with a configuration with __stop__ set' do
+				it 'returns the value of ExecutionConfiguration' do
+					allow(subject).to receive(:parse) do
+						configuration = Nessana::Executor::ExecutionConfiguration.new
+						configuration['__stop__'] = true
+						configuration['__exit-code__'] = 7
+						configuration
+					end
+
+					expect(subject.send(:execute!)).to eq(7)
+				end
+			end
+
 			context 'taking no command-line arguments' do
 				let(:arguments) { [] }
 
