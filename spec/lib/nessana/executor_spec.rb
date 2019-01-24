@@ -23,6 +23,13 @@ describe Nessana do
 				allow(STDOUT).to receive(:write)
 			end
 
+			context 'if .parse returns non-ExecutionConfiguration' do
+				it 'returns the result from .parse' do
+					allow(subject).to receive(:parse) { 2 }
+					expect(subject.send(:execute!)).to eq(2)
+				end
+			end
+
 			context 'taking no command-line arguments' do
 				let(:arguments) { [] }
 
