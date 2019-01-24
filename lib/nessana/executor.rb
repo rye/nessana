@@ -14,6 +14,7 @@ module Nessana::Executor
 	def self.execute!(argv = ARGV)
 		configuration = parse(*argv)
 
+		# TODO Don't just return whatever the value is; be more intelligent
 		return configuration unless configuration.is_a?(Nessana::Executor::ExecutionConfiguration)
 
 		return configuration['__exit-code__'] if configuration['__stop__']
