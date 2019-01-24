@@ -15,7 +15,7 @@ See [CONTRIBUTING.md](CONTRIBUTING.md)
 ## License
 
 ```
-<one line to give the program's name and a brief idea of what it does.>
+nessana: A Nessus scan parser and differ
 Copyright (C) 2019 Kristofer Rye
 
 This program is free software: you can redistribute it and/or modify
