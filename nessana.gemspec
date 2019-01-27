@@ -18,6 +18,8 @@ DESCRIPTION
 	s.files = Dir.glob(['README.md', 'lib/**/*.rb', 'bin/**'])
 	s.executables = 'nessana'
 
+	s.add_dependency 'activerecord', '~> 5.2.2'
+	s.add_dependency 'bulk_insert', '~> 1.7.0'
 	s.add_dependency 'fastcsv', '~> 0.0.6'
 	s.add_dependency 'mime-types', '~> 3.1'
 	s.add_dependency 'sqlite3', '~> 1.3.13'
