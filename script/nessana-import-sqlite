@@ -75,6 +75,17 @@ class Host < ActiveRecord::Base
 end
 
 module Importer
+	class Row
+		attr_reader :id, :cve, :cvss, :risk, :host, :protocol, :port, :name, :synopsis, :description, :solution, :see_also, :plugin_output
+		def initialize(*row)
+			raise "Unexpected row length: #{row.count}" unless row.count == 13
+			@id = row[0].to_i
+			@cve, @cvss, @risk, @host, @protocol = row[1..5]
+			@port = row[6].to_i
+			@name, @synopsis, @description, @solution, @see_also, @plugin_output = row[7..12]
+		end
+	end
+
 	def self.import(filename)
 		unless filename
 			warn "Filename not given; not doing anything."
@@ -100,58 +111,44 @@ module Importer
 					next
 				end
 
-				raise "Unexpected row length: #{row.count}" unless row.count == 13
+				row = Row.new(*row)
 
-				id = row[0].to_i
-				cve = row[1]
-				cvss = row[2]
-				risk = row[3]
-				host = row[4]
-				protocol = row[5]
-				port = row[6].to_i
-				name = row[7]
-				synopsis = row[8]
-				description = row[9]
-				solution = row[10]
-				see_also = row[11]
-				plugin_output = row[12]
-
-				if existing = plugins[id]
-					if existing[:cve] != cve
-						plugins[id][:cve] = "#{plugins[id][:cve]}, #{cve}"
+				if existing = plugins[row.id]
+					if existing[:cve] != row.cve
+						plugins[row.id][:cve] = "#{plugins[row.id][:cve]}, #{row.cve}"
 					end
 
-					raise "Different ID (wat)" if existing[:id] != id
-					raise "Different CVSS" if existing[:cvss] != cvss
-					raise "Different Risk" if existing[:risk] != risk
-					raise "Different Name" if existing[:name] != name
-					raise "Different Synopsis" if existing[:synopsis] != synopsis
-					raise "Different Description" if existing[:description] != description
-					raise "Different Solution" if existing[:solution] != solution
-					raise "Different See Also" if existing[:see_also] != see_also
-				elsif existing = Plugin.find_by(id: id)
-					unless existing.cve.match?(cve)
-						existing.cve = "#{existing.cve}, #{cve}"
+					raise "Different ID (wat)" if existing[:id] != row.id
+					raise "Different CVSS" if existing[:cvss] != row.cvss
+					raise "Different Risk" if existing[:risk] != row.risk
+					raise "Different Name" if existing[:name] != row.name
+					raise "Different Synopsis" if existing[:synopsis] != row.synopsis
+					raise "Different Description" if existing[:description] != row.description
+					raise "Different Solution" if existing[:solution] != row.solution
+					raise "Different See Also" if existing[:see_also] != row.see_also
+				elsif existing = Plugin.find_by(id: row.id)
+					unless existing.cve.match?(row.cve)
+						existing.cve = "#{existing.cve}, #{row.cve}"
 						existing.save!
 					end
 
-					raise "Different ID (wat)" if existing.id != id
-					raise "Different CVSS" if existing.cvss != cvss
-					raise "Different Risk" if existing.risk != risk
-					raise "Different Name" if existing.name != name
-					raise "Different Synopsis" if existing.synopsis != synopsis
-					raise "Different Description" if existing.description != description
-					raise "Different Solution" if existing.solution != solution
-					raise "Different See Also" if existing.see_also != see_also
+					raise "Different ID (wat)" if existing.id != row.id
+					raise "Different CVSS" if existing.cvss != row.cvss
+					raise "Different Risk" if existing.risk != row.risk
+					raise "Different Name" if existing.name != row.name
+					raise "Different Synopsis" if existing.synopsis != row.synopsis
+					raise "Different Description" if existing.description != row.description
+					raise "Different Solution" if existing.solution != row.solution
+					raise "Different See Also" if existing.see_also != row.see_also
 				else
-					plugins[id] = { id: id, cve: cve, cvss: cvss, risk: risk, name: name, synopsis: synopsis, description: description, solution: solution, see_also: see_also }
+					plugins[row.id] = { id: row.id, cve: row.cve, cvss: row.cvss, risk: row.risk, name: row.name, synopsis: row.synopsis, description: row.description, solution: row.solution, see_also: row.see_also }
 				end
 
-				unless hosts[host] || Host.find_by(hostname: host)
-					hosts[host] = { hostname: host }
+				unless hosts[row.host] || Host.find_by(hostname: row.host)
+					hosts[row.host] = { hostname: row.host }
 				end
 
-				detections << { scan_id: scan.id, plugin_id: id, hostname: host, port: port, protocol: protocol, plugin_output: plugin_output }
+				detections << { scan_id: scan.id, plugin_id: row.id, hostname: row.host, port: row.port, protocol: row.protocol, plugin_output: row.plugin_output }
 			end
 
 			Plugin.bulk_insert(:id, :cve, :cvss, :risk, :name, :synopsis, :description, :solution, :see_also) do |worker|
