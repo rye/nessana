@@ -81,6 +81,7 @@ end
 module Importer
 	class Row
 		attr_reader :id, :cve, :cvss, :risk, :host, :protocol, :port, :name, :synopsis, :description, :solution, :see_also, :plugin_output
+
 		def initialize(*row)
 			raise "Unexpected row length: #{row.count}" unless row.count == 13
 			@id = row[0].to_i
@@ -96,20 +97,19 @@ module Importer
 			exit 1
 		end
 
-		scan = Scan.create(filename: File.expand_path(filename))
+		data = File.open(filename, 'rb', &:read)
+		sha512 = Digest::SHA512.hexdigest data
 
-		plugins = {}
-		hosts = {}
-		detections = []
+		begin
+			scan = Scan.create!(filename: File.expand_path(filename), sha512: sha512)
 
-		File.open(filename, 'rb') do |io|
-			io.advise(:willneed)
-			io.advise(:noreuse)
-			io.advise(:sequential)
+			plugins = {}
+			hosts = {}
+			detections = []
 
 			first = true
 
-			FastCSV.raw_parse(io) do |row|
+			FastCSV.raw_parse(data) do |row|
 				if first
 					first = false
 					next
@@ -176,6 +176,8 @@ module Importer
 					worker.add(detection)
 				end
 			end
+		rescue ActiveRecord::RecordInvalid => e
+			puts "Scan already exists? #{e}"
 		end
 	end
 end
