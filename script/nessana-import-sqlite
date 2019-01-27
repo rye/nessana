@@ -13,7 +13,7 @@ require 'pp'
 require 'pry'
 
 # Connect to an in-memory sqlite3 database
-ActiveRecord::Base.establish_connection(adapter: 'sqlite3', database: ':memory:')
+ActiveRecord::Base.establish_connection(adapter: 'sqlite3', database: 'nessana.sqlite3')
 # ActiveRecord::Base.logger = Logger.new(STDOUT)
 # ActiveRecord::Base.logger.level = :debug
 
