@@ -177,7 +177,7 @@ module Importer
 				end
 			end
 		rescue ActiveRecord::RecordInvalid => e
-			puts "Scan already exists? #{e}"
+			warn "Scan (#{filename}) already exists, or otherwise failed validation: #{e}"
 		end
 	end
 end
