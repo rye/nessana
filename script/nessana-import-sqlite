@@ -56,6 +56,9 @@ class Scan < ActiveRecord::Base
 	has_many :detections
 	has_many :plugins, -> { distinct }, through: :detections
 	has_many :hosts, -> { distinct }, through: :detections
+
+	validates :filename, presence: true, uniqueness: true
+	validates :sha512, presence: true, uniqueness: true
 end
 
 class Detection < ActiveRecord::Base
