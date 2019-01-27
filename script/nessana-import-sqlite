@@ -19,20 +19,20 @@ ActiveRecord::Base.establish_connection(adapter: 'sqlite3', database: ':memory:'
 
 # Define a minimal database schema
 ActiveRecord::Schema.define do
-	create_table :scans, force: true do |t|
+	create_table :scans do |t|
 		t.string :filename
-	end
+	end unless table_exists?(:scans)
 
-	create_table :detections, force: true do |t|
+	create_table :detections do |t|
 		t.belongs_to(:plugin, index: true)
 		t.belongs_to(:scan, index: true)
 		t.belongs_to(:host, index: true)
 		t.binary :plugin_output
 		t.integer :port
 		t.string :protocol
-	end
+	end unless table_exists?(:detections)
 
-	create_table :plugins, force: true do |t|
+	create_table :plugins do |t|
 		t.string :cve
 		t.string :cvss
 		t.string :risk
@@ -41,13 +41,13 @@ ActiveRecord::Schema.define do
 		t.text :description
 		t.text :solution
 		t.text :see_also
-	end
+	end unless table_exists?(:plugins)
 
-	create_table :hosts, force: true do |t|
+	create_table :hosts do |t|
 		t.string :hostname
 		t.string :ip
 		t.string :dns
-	end
+	end unless table_exists?(:hosts)
 end
 
 # Define the models
