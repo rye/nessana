@@ -129,7 +129,7 @@ module Importer
 					raise "Different Synopsis" if existing[:synopsis] != row.synopsis
 					raise "Different Description" if existing[:description] != row.description
 					raise "Different Solution" if existing[:solution] != row.solution
-					raise "Different See Also" if existing[:see_also] != row.see_also
+					raise "Different See Also: \n\nCurrent:\n\n#{existing[:see_also]}\n\nNew:\n\n#{row.see_also}" if existing[:see_also] != row.see_also
 				elsif existing = Plugin.find_by(id: row.id)
 					unless existing.cve.match?(row.cve)
 						existing.cve = "#{existing.cve}, #{row.cve}"
@@ -143,7 +143,7 @@ module Importer
 					raise "Different Synopsis" if existing.synopsis != row.synopsis
 					raise "Different Description" if existing.description != row.description
 					raise "Different Solution" if existing.solution != row.solution
-					raise "Different See Also" if existing.see_also != row.see_also
+					raise "Different See Also: \n\nCurrent:\n\n#{existing[:see_also]}\n\nNew:\n\n#{row.see_also}" if existing[:see_also] != row.see_also
 				else
 					plugins[row.id] = { id: row.id, cve: row.cve, cvss: row.cvss, risk: row.risk, name: row.name, synopsis: row.synopsis, description: row.description, solution: row.solution, see_also: row.see_also }
 				end
